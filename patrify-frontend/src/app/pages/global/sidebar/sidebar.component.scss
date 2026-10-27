@@ -1,0 +1,14 @@
+
+.sidebar {
+  transition: all .4s ease-in-out;
+
+  img {
+    position: relative;
+    left: -2.5px;
+    transition: all .4s ease-in-out;
+  }
+
+  &:hover img {
+    transform: translateX(35px);
+  }
+}

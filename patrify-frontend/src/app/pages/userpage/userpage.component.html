@@ -1,0 +1,60 @@
+<body class="flex bg-gray-100 h-max">
+    <sidebar class="sidebar"></sidebar> <!-- SIDEBAR -->
+    <div class="flex flex-col flex-1">
+        <header-global></header-global> <!-- HEADER -->
+        <div class="container mx-auto px-4 py-8">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <!-- Profile Header -->
+                <div class="px-6 py-4" id="bg-user">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 mr-4">
+                            <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" height="800px" width="800px" version="1.1"
+                                viewBox="0 0 60.671 60.671" xml:space="preserve">
+                                <g>
+                                    <g>
+                                        <ellipse class="fill-current text-white group-hover:fill-purple-900"
+                                            fill="currentColor" cx="30.336" cy="12.097" rx="11.997" ry="12.097" />
+                                        <path class="fill-current text-white group-hover:fill-purple-900"
+                                            fill="currentColor"
+                                            d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9    C48.354,35.818,42.661,30.079,35.64,30.079z" />
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <!-- Profile Body -->
+                        <div *ngFor="let user of userInfo">
+                            <div class="text-white">
+                                
+                                <h2 class="text-2xl font-semibold">Nome: {{user.user_name}}</h2>
+                                <p class="text-sm">Razão Social: {{user.user_razaosocial}}</p>
+                                <p class="text-sm">CNPJ: {{user.user_cnpj}}</p>
+                                <p class="text-sm">Telefone 1: {{user.user_telefone1}}</p>
+                                <p class="text-sm">Telefone 2: {{user.user_telefone2}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile Footer -->
+                <div *ngFor="let user of userInfo">
+                    <div class="px-6 py-4 bg-gray-200">
+                        <h2 class="text-lg font-semibold text-gray-800">Sobre mim</h2>
+                        <div>
+                            
+                            <p>Atividade Econômica: {{user.atividadeeconomica}} </p>
+                            <p>ENDEREÇO: {{user.user_endereco}}</p>
+                            <!-- Adicione os outros campos que deseja exibir aqui -->
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="px-6 py-4">
+                    <h2 class="text-lg font-semibold text-gray-800">Quantidade de Patrimonios ativos por</h2>
+                    <p class="mt-2 text-gray-600"></p>
+                    <img src="../../../assets/imgs/grafico de teste.png" alt="" width="800px">
+                </div> -->
+
+
+            </div>
+        </div>
+    </div>
+</body>

@@ -1,0 +1,134 @@
+<body class="flex bg-gray-100 h-max">
+  <sidebar class="sidebar"></sidebar> <!-- SIDEBAR -->
+  <div class="flex flex-col flex-1">
+    <header-global></header-global> <!-- HEADER -->
+    <filtro (dataReady)="onDataReady($event.filters, $event.searchText)"></filtro> <!-- FILTRO DO INVENTÁRIO -->
+    <div class="overflow-x-auto mt-4">
+      <table class="table-auto w-[98%] mx-auto divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Imagem</th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider"
+              id="codigoSerie">Código de série</th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Nome</th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Categoria</th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider" id="local">
+              Localização</th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider" id="valor">
+              Preço</th>
+
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider" id="data">Data
+            </th>
+            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider"
+              id="conservacao">Conservação</th>
+            <th colspan="2" scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">
+              Ações</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 transition-colors ">
+          <!-- Row 1 -->
+          <tr *ngFor="let patrimonio of patrimonios" class="hover:bg-gray-300">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-20 imagem">
+                  <img [src]="patrimonio.imageSrc" alt="" class="patr_img">
+                </div>
+              </div>
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="text-sm text-gray-900">{{ patrimonio.patr_codigoserie }}</span>
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap relative">
+              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">{{ patrimonio.patr_name }}</span><br>
+
+              <input *ngIf="patrimonio.editMode" type="text" [(ngModel)]="patrimonio.patr_name"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap relative">
+              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">{{ patrimonio.patr_tipo }}</span>
+              <select *ngIf="patrimonio.editMode" [(ngModel)]="patrimonio.patr_tipo"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full z-10">
+                <option value="Tecnologia">Tecnologia</option>
+                <option value="Mobiliário">Mobiliário</option>
+                <option value="Produção">Produção</option>
+                <option value="Transporte">Transporte</option>
+                <option value="Logística">Logística</option>
+                <option value="Segurança">Segurança</option>
+                <option value="Labotorial">Labotorial</option>
+              </select>
+
+            <td class="px-6 py-4 whitespace-nowrap relative">
+              <span *ngIf="!patrimonio.editMode" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full "
+                [ngClass]="{
+                  'bg-green-100 text-green-800': patrimonio.patr_ativoinativo === 'Ativo',
+                  'bg-red-100 text-red-800': patrimonio.patr_ativoinativo === 'Não ativo'
+              }">{{patrimonio.patr_ativoinativo}}</span>
+              <select *ngIf="patrimonio.editMode" [(ngModel)]="patrimonio.patr_ativoinativo"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full z-10">
+                <option value="Ativo">Ativo</option>
+                <option value="Não ativo">Não ativo</option>
+              </select>
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap relative" id="local">
+              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">{{patrimonio.patr_local}}</span>
+              <input *ngIf="patrimonio.editMode" type="text" [(ngModel)]="patrimonio.patr_local"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
+            </td>
+
+            <td class="relative">
+              <span *ngIf="!patrimonio.editMode" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="valor">{{
+                patrimonio.patr_valor }}</span>
+              <input *ngIf="patrimonio.editMode" type="text" [(ngModel)]="patrimonio.patr_valor"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
+            </td>
+
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 relative" id="data">
+              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">
+                {{ patrimonio.date | date:'dd/MM/yyyy' }}
+              </span>
+              <input *ngIf="patrimonio.editMode" type="date" [(ngModel)]="patrimonio.date"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
+            </td>
+
+
+            <td class="px-6 py-4 whitespace-nowrap relative" id="conservacao">
+              <!-- Elemento de exibição normal -->
+              <span *ngIf="!patrimonio.editMode"
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                {{patrimonio.patr_depreciacao}}
+              </span>
+
+              <!-- Elemento de edição -->
+              <select *ngIf="patrimonio.editMode" [(ngModel)]="patrimonio.patr_depreciacao"
+                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full z-10">
+                <option value="Novo">Novo</option>
+                <option value="Excelente">Excelente</option>
+                <option value="Regular">Regular</option>
+                <option value="Com defeitos">Com defeitos</option>
+                <option value="Obsoleto">Obsoleto</option>
+                <option value="Descartado">Descartado</option>
+              </select>
+            </td>
+            <td class="flex justify-center items-center mt-9">
+              <button id="btnActions"
+                class="rounded-full w-8 h-8 bg-transparent border-2 border-gray-400 items-center flex justify-center text-center">
+                <p class="text-gray-400 text-center font-bold text-2xl mb-3">...</p>
+              </button>
+              <div class="flex flex-col bg-gray-200 w-24 h-24 absolute justify-center items-center text-white">
+                <button class="text-blue-800 font-bold" *ngIf="!patrimonio.editMode"
+                  (click)="toggleEditMode(patrimonio)">Editar</button>
+                <button class="salvar" *ngIf="patrimonio.editMode" (click)="saveChanges(patrimonio)">Salvar</button>
+                <button class="text-red-600 font-bold" *ngIf="!patrimonio.editMode"
+                  (click)="deletarPatrimonio(patrimonio)">Deletar</button>
+              </div>
+            </td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>

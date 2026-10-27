@@ -1,0 +1,71 @@
+<div class="min-h-screen bg-gray-100" [ngClass]="{ 'sticky top-0': sidebarFixed }">
+    <div class="sidebar min-h-screen w-[3.35rem] overflow-hidden border-r hover:w-56 hover:bg-white hover:shadow-lg">
+      <div class="flex h-screen flex-col justify-between pt-2 pb-6">
+        <div>
+          <div class="w-max p-2.5">
+            <img src="../../../assets/imgs/Patrify-logo-gradient2.png" class="logo w-28" alt="Patrify">
+          </div>
+          <ul class="mt-6 space-y-2 tracking-wide">
+            <li class="min-w-max">
+                <a href="/home" class="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" version="1.0" width="512.000000pt" height="512.000000pt" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+                    <path class="fill-current text-gray-600 group-hover:fill-purple-900" fill-rule="evenodd" d="M2433 4582 c-28 -10 -69 -30 -90 -44 -71 -47 -2330 -1935 -2336 -1952 -13 -32 -7 -91 10 -116 9 -14 62 -78 116 -143 111 -131 125 -139 203 -122 12 3 516 417 1120 920 604 503 1101 915 1104 915 3 0 502 -414 1109 -919 839 -699 1110 -920 1134 -924 18 -2 44 0 59 5 23 8 189 193 241 268 23 33 22 101 -2 131 -11 13 -175 152 -365 309 l-345 285 -1 668 0 669 -29 29 -29 29 -347 0 c-381 0 -383 0 -404 -62 -7 -20 -11 -145 -11 -339 l0 -309 -396 331 c-273 228 -414 339 -453 357 -75 35 -211 42 -288 14z"/>
+                    <path class="fill-current text-gray-600 group-hover:fill-purple-900" fill-rule="evenodd" d="M1643 3027 l-913 -752 0 -800 0 -801 23 -44 c13 -26 40 -57 65 -75 l44 -30 649 -3 649 -2 0 610 0 610 400 0 400 0 0 -610 0 -610 649 2 649 3 44 30 c23 17 53 49 65 70 l23 40 0 805 0 805 -910 750 c-501 413 -914 751 -918 752 -4 2 -418 -336 -919 -750z"/>
+                    </g>
+                    </svg>
+                  <span class="group-hover:text-gray-700">Home</span>
+                </a>
+              </li>
+            <li class="min-w-max">
+              <a routerLink="/usuario" class="bg group flex items-center space-x-4 rounded-full px-4 py-3 text-gray-600">
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="800px" width="800px" version="1.1" id="Capa_1" viewBox="0 0 60.671 60.671" xml:space="preserve">
+                  <g>
+                    <g>
+                      <ellipse class="fill-current text-gray-600 group-hover:fill-purple-900" fill="currentColor" cx="30.336" cy="12.097" rx="11.997" ry="12.097"/>
+                      <path class="fill-current text-gray-600 group-hover:fill-purple-900" fill="currentColor" d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9    C48.354,35.818,42.661,30.079,35.64,30.079z"/>
+                    </g>
+                  </g>
+                  </svg>
+                <span class="group-hover:text-gray-700">Perfil do Usuário</span>
+              </a>
+            </li>
+            <li class="min-w-max">
+              <a href="/inventario" class="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600">
+                <svg class="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path class="group-hover:fill-purple-900" fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                    <path class="group-hover:fill-purple-300" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z"/>
+                  </svg>     
+                <span class="group-hover:text-gray-700">Inventário</span>
+              </a>
+            </li>
+            <li class="min-w-max">
+              <a href="/descarte" class="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" version="1.0" viewBox="0 0 840.000000 859.000000">
+                  <g class="h-5 w-5" transform="translate(0.000000,859.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
+                  <path fill-rule="evenodd" class="fill-current text-gray-600 group-hover:fill-purple-900" d="M3213 8540 c-392 -89 -625 -388 -651 -839 l-7 -116 -690 -5 -690 -5 -56 -26 c-103 -49 -172 -140 -188 -248 l-6 -46 -163 -3 -162 -2 0 -324 0 -323 173 -6 c94 -3 1718 -4 3607 -4 l3435 2 3 328 2 327 -164 0 -163 0 -7 48 c-14 104 -94 209 -194 255 -47 22 -54 22 -738 25 l-691 3 -7 97 c-10 129 -30 241 -59 327 -97 283 -286 455 -581 530 l-99 25 -911 -1 c-848 -1 -917 -2 -993 -19z m1761 -650 c141 -21 191 -77 203 -228 l6 -82 -977 0 -976 0 0 23 c1 56 22 161 40 196 23 46 83 79 163 91 80 12 1460 11 1541 0z"/>
+                  <path fill-rule="evenodd" class="fill-current text-gray-600 group-hover:fill-purple-900" d="M1253 3573 c3 -2490 4 -2703 20 -2765 73 -294 267 -542 525 -672 86 -44 221 -84 322 -96 69 -8 661 -10 2150 -8 2251 4 2079 -1 2240 59 148 55 318 171 408 278 70 83 148 215 181 307 65 179 61 -9 61 2925 l0 2669 -2955 0 -2955 0 3 -2697z m1967 -263 l0 -1970 -325 0 -325 0 0 1970 0 1970 325 0 325 0 0 -1970z m1315 3 l0 -1968 -325 0 -325 0 -3 1968 -2 1967 328 0 327 0 0 -1967z m1313 0 l-3 -1968 -325 0 -325 0 -3 1968 -2 1967 330 0 330 0 -2 -1967z"/>
+                  </g>
+                  </svg>
+                <span class="group-hover:text-gray-700">Descarte</span>
+              </a>
+            </li>
+            <!-- <li class="min-w-max">
+                <a href="#" class="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:fill-purple-900" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                    </svg>
+                <span class="group-hover:text-gray-700">Configurações</span>
+              </a>
+            </li> -->
+          </ul>
+        </div>
+        <div class="w-max -mb-3">
+          <a href="#" class="group flex items-center space-x-4 rounded-md px-4 py-3 text-gray-600" (click)="logout()">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 16.5V19C15 20.1046 14.1046 21 13 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3H13C14.1046 3 15 3.89543 15 5V8.0625M11 12H21M21 12L18.5 9.5M21 12L18.5 14.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+            <span class="group-hover:text-gray-700">Deslogar</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>

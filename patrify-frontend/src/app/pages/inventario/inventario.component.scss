@@ -1,0 +1,54 @@
+
+
+#btn-grafico {
+    transition: all .2s ease-in;
+        &:hover {
+            color: #fff;
+            background-image: linear-gradient(to right top, #240046, #2e0255, #380664, #420a74, #4c1084, #740686, #970086, #b60084, #e0116c, #fb4250, #ff7131, #ff9e00);
+        }
+}
+
+#btn-patrimonio{
+    transition: all 1s ease;
+}
+
+.imagem{
+    height: 100%;
+}
+
+.patr_image{
+    width: 100%;
+    max-height: 100%;
+}
+
+.salvar{
+    color: #380664;
+}
+
+
+@media screen and (max-width: 1500px) {
+    filtro{
+        width: 95%;
+    }
+  }
+
+
+  
+@media screen and (max-width: 1350px) {
+    filtro{
+        width: 95vw;
+    }
+  }
+
+
+    
+@media screen and (max-width: 650px) {
+    filtro{
+        width: 83vw;
+    }
+  }
+
+
+#codigoSerie {
+    text-wrap: nowrap; 
+}

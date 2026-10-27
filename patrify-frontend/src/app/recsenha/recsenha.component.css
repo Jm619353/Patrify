@@ -1,0 +1,114 @@
+
+
+
+@-webkit-keyframes AnimateBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes AnimateBG {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    50% {
+        background-position: 100% 1%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+.bg {
+    overflow: hidden;
+    display: flex;
+    width: 100%;
+    max-height: 100vh;
+    height: 100vh;
+    background-image: linear-gradient(to right top, #240046, #2e0255, #380664, #420a74, #4c1084, #740686, #970086, #b60084, #e0116c, #fb4250, #ff7131, #ff9e00);
+    background-size: 300% 300%;
+    -webkit-animation: AnimateBG 8s ease infinite;
+    animation: AnimateBG 8s ease infinite;
+    align-items: center;
+    justify-content: center;
+}
+
+#logo {
+    width: 150px;
+    margin-bottom: 1rem;
+    transition: all 0.25s ease-out;
+    &:hover {
+        transform: translateY(-5px);
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 2px solid #fff;
+    width: 500px;
+    height: 500px;
+    border-radius: 25px;
+
+    .title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: -15%;
+        text-align: center;
+    }
+
+    .forms {
+        display: flex;
+
+
+        input {
+            border: none;
+            border-bottom: 1px solid #fff;
+            background: transparent;
+            color:  #fff;
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 10px;
+            outline: none;
+        }
+        button {
+            border: 1px solid #fff;
+            background-color: transparent;
+            border-radius: 25px;
+            color: #fff;
+            padding: 15px;
+            width: 200px;
+            text-align: center;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            cursor: pointer;
+        }
+    }
+
+}
+
+.other {
+    display: flex;
+    span {
+        margin-top: 20px;
+    }
+}

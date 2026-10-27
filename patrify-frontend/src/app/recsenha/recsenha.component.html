@@ -1,0 +1,23 @@
+<div class="bg">
+    <div class="container">
+        <div class="title">
+            <img src="../../../../assets/imgs/patrify letter logo.png" id="logo">
+            <p>Esqueceu a senha?<br>Digite o CNPJ e o e-mail de acesso do seu usuário.</p>
+        </div>
+        <div class="forms" (submit)="recpassword()">
+            <form>
+                <div>
+                  <label for="cnpj">Nova senha:</label>
+                  <input type="text" id="CNPJ" name="CNPJ" [(ngModel)]="newpass" [ngModelOptions]="{standalone: true}">
+                </div>
+                
+                
+        
+                <button type="submit">Enviar</button>
+              </form>
+        </div>
+        <div class="other">
+            <span>Um link será enviado para seu e-mail para alterar sua senha</span>
+        </div>
+    </div>   
+</div>

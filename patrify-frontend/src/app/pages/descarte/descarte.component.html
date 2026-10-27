@@ -1,0 +1,65 @@
+<body class="flex bg-gray-100 h-max">
+    <sidebar class="sidebar"></sidebar>  <!-- SIDEBAR -->
+    <div class="flex flex-col flex-1">
+      <header-global></header-global> <!-- HEADER -->
+      <div class="overflow-x-auto mt-4">
+        <!-- -->
+        <div class="bg-white rounded-lg w-[98%] p-6 shadow-md mx-auto overflow-hidden">
+            <div class="flex items-center space-x-4">
+                <!-- Barra de pesquisa com ícone -->
+                <div class="flex items-center bg-gray-200 w-[90%] h-10 rounded-full px-1">
+                    <svg class="h-4 w-4 ml-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.555-4.555M8.486 15.514A6 6 0 1 1 15.514 8.486 6 6 0 0 1 8.486 15.514zM15 15l5 5"/>
+                    </svg>
+                    <input type="search" [(ngModel)]="searchQuery" placeholder="Pesquisar..." class="bg-gray-200 w-full h-full rounded-full px-3 focus:outline-none"  (keydown.enter)="buscarLocais(searchQuery)">
+                </div>
+                <!-- Select com opções -->
+                
+        <!-- Botão de adicionar patrimônio -->
+                <button id="botao-add" type="button" class="text-white bg-gradient-to-r from-purple-900 via-pink-500 to-orange-500 h-10 rounded-full p-2 whitespace-nowrap transition-all duration-300 hover:from-orange-500 hover:via-pink-500 hover:to-purple-900" (click)="buscarLocais(searchQuery)">Procurar Descarte</button>
+            </div>
+            
+           
+        </div>
+        
+      
+        
+   <!-- -->
+        <br>
+        <table class="table-auto w-[98%] mx-auto divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider w-1/5">Nome</th>
+              <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider w-1/5">Endereço</th>
+              <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider w-1/5" id="contato">Contato</th>
+              <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider w-1/5" id="site">Website</th>
+              <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider w-1/5" id="url">Localização</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200 transition-colors">
+            <!-- Row 1 -->
+            <tr *ngFor="let local of localizacoes" class="hover:bg-gray-300">
+              <td class="px-6 py-4 whitespace-nowrap w-1/5">
+                <div class="text-sm text-gray-900">{{local.nome}}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/5">
+                {{local.localizacao}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/5" id="contato">
+                {{local.contato}}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/5" id="site">
+                <a href="{{local.website}}" target="_blank">{{local.website}}</a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 w-1/5" id="url">
+                <a href="{{local.url}}" target="_blank"><button>Ir para o Local</button></a>
+              </td>
+            </tr>
+            <!-- Additional rows here -->
+          </tbody>
+        </table>
+        
+      </div>
+      </div>
+  </body>
+  

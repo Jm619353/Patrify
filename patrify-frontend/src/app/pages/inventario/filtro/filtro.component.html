@@ -1,0 +1,161 @@
+<div class="bg-white rounded-lg w-[98%] p-6 shadow-md mx-auto overflow-hidden">
+    <div class="flex items-center space-x-4 search">
+        <!-- Barra de pesquisa com ícone -->
+        <div class="flex items-center bg-gray-200 w-[75%] h-10 rounded-full px-1">
+            <svg class="h-4 w-4 ml-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.555-4.555M8.486 15.514A6 6 0 1 1 15.514 8.486 6 6 0 0 1 8.486 15.514zM15 15l5 5"/>
+            </svg>
+            <input type="search" placeholder="Pesquisar..." class="bg-gray-200 w-full h-full rounded-full px-2 focus:outline-none search" [(ngModel)]="searchText" (ngModelChange)="search()">
+        </div>
+        <!-- Select com opções -->
+        <select class="type bg-gray-200 w-44 h-10 rounded-full p-2 whitespace-nowrap focus:outline-none" [(ngModel)]="tipofilter" (change)="onFilterChange() ">
+            <option value="Todos">Todos</option>
+            <option value="Tecnologia">Tecnologia</option>
+            <option value="Mobiliário">Mobiliário</option>
+            <option value="Industrial">Industrial</option>
+            <option value="Transporte">Transporte</option>
+            <option value="Logística">Logística</option>
+            <option value="Segurança">Segurança</option>
+            <option value="Labotorial">Laboratorial</option>
+        </select>
+<!-- Botão de adicionar patrimônio -->
+<button id="botao-add" type="button" class="text-white bg-gradient-to-r from-purple-900 via-pink-500 to-orange-500 h-10 rounded-full p-2 whitespace-nowrap duration-300 hover:from-orange-500 hover:via-pink-500 hover:to-purple-900" (click)="alternarAddPatrimonio()">Adicionar patrimônio</button>
+    </div>
+    <hr class="h-0.5 w-[100%] my-8 bg-gray-200 border-0 dark:bg-gray-700">
+    <div class="flex items-center justify-center space-x-4 gap-8 w-[100%] filtros">
+        <span class="flex flex-col">
+            <span class="font-bold">Ordem</span>
+            <select [(ngModel)]="nameFilter" (change)="onFilterChange()" class="bg-transparente text-gray-700 border-2 border-gray-700 font-medium w-44 h-10 rounded-full p-2 focus:outline-none">
+                <option *ngFor="let option of nameFilterOptions" [value]="option">{{ option }}</option>
+              </select>
+              
+              
+        </span>
+        <span class="flex flex-col">
+            <span class="font-bold">Status</span>
+            <select [(ngModel)]="statusFilter" (change)="onFilterChange()" class=" bg-transparente text-gray-700 border-2 border-gray-700 font-medium w-44 h-10 rounded-full p-2 focus:outline-none">
+                <option>Todos</option>
+                <option>Não ativo</option>
+                <option>Ativo</option>
+            </select>
+        </span>
+        
+        <span class="flex flex-col">
+            <span class="font-bold">Preço</span>
+            <select [(ngModel)]="precoFilter" (change)="onFilterChange()"
+                class="bg-transparente text-gray-700 border-2 border-gray-700 font-medium w-44 h-10 rounded-full p-2 focus:outline-none">
+                <option value="todos">Todos</option>
+                <option value="menor que cinquenta"><$50</option>
+                <option value="51 a 100">$51-$100</option>
+                <option value="101 a 200">$101-$200</option>
+                <option value="201 a 500">$201-$500</option>
+                <option value="501 a 4000">$501-$4000</option>
+                <option value="maior que 4000">Maior que $4000</option>
+            </select>
+        </span>
+        <span class="flex flex-col">
+            <span class="font-bold">Data de aquisição</span> 
+            <select [(ngModel)]="dataFilter" (change)="onFilterChange()" class="bg-transparente text-gray-700 font-medium border-2 border-gray-700 w-44 h-10 rounded-full p-2 focus:outline-none">
+                <option value="qualquer data">Qualquer Data</option>
+                <option value="ultimos 7 dias">Últimos 7 dias</option>
+                <option value="ultimos 30 dias">Últimos 30 dias</option>
+                <option value="ultimos 3 meses">Últimos 3 meses</option>
+                <option value="ultimos 6 meses">Últimos 6 meses</option>
+                <option value="ultimo 1 ano">Último 1 ano</option>
+                <option value="mais de 1 ano">Mais de 1 ano</option>
+            </select>
+        </span>
+        <span class="flex flex-col">
+            <span class="font-bold">Conservação</span>
+            <select  [(ngModel)]="conservacaoFilter" (change)="onFilterChange()" class="bg-transparente text-gray-700 font-medium border-2 border-gray-700 w-44 h-10 rounded-full p-2 focus:outline-none">
+                    <option value="qualquer">Qualquer</option>    
+                    <option value="Novo">Novo</option>
+                    <option value="Excelente">Excelente</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Com defeitos">Com defeitos</option>
+                    <option value="Obsoleto">Obsoleto</option>
+                    <option value="Descartado">Descartado</option>
+            </select>
+        </span>
+    </div>  
+</div>
+
+<!--ADICIONAR PATRIMONIO-->
+<div *ngIf="mostrarAddPatrimonio" id="container" class="bg-white rounded-lg w-[98%] h-max shadow-md mx-auto overflow-hidden mt-4 relative" [@fadeInOut]>
+    <div id="botao" class="bg-gradient-to-r from-amber-500 via-pink-600 to-purple-900 rounded-t-lg px-6 py-4">
+        <p id="btn-p" class="font-bold text-white text-4xl">ADICIONAR PATRIMÔNIO</p>
+    </div>
+    <form class="p-6 flex flex-col add-patr" (ngSubmit)="registerPatr()" #form="ngForm">
+        <div class="mb-4">
+            <h1>NOME:</h1>  
+            <input type="text" placeholder="Nome do patrimônio" [(ngModel)]="name"   [ngModelOptions]="{standalone: true}" class="w-full border border-gray-300 rounded-md p-2">
+        </div>
+        <!-- Container para os campos de valor, fornecedor e quantidade -->
+        <div class="flex gap-4 flex-row">
+            <!-- Campos de entrada -->
+            <div class="flex-1">
+                <h1>VALOR:</h1>
+                <input type="text" placeholder="Valor" [(ngModel)]="valor"  [ngModelOptions]="{standalone: true}" class="w-full border border-gray-300 rounded-md p-2"  currencyMask>
+            </div>
+            <div class="flex-1">
+                <h1>LOCALIZAÇÃO:</h1>
+                <input type="text" placeholder="Localização"  [(ngModel)]="local" [ngModelOptions]="{standalone: true}"  class="w-full border border-gray-300 rounded-md p-2">
+            </div>
+        </div>
+        <!-- Novos inputs adicionados -->
+        <div class="flex flex-row mt-4 gap-10" id="add-list">
+            <span class="flex flex-col flex-1">
+                <span>STATUS</span>
+                <select [(ngModel)]="ativoInativo" [ngModelOptions]="{standalone: true}" class="bg-gray-200 text-gray-700 border-2 border-gray-700 font-medium w-full h-10 rounded-full p-2 focus:outline-none">
+                    <option>Ativo</option>
+                    <option>Não ativo</option>
+                </select>
+            </span>
+            <span class="flex flex-col flex-1">
+                <span>CONSERVAÇÃO</span>
+                <select  [(ngModel)]="depreciacao" [ngModelOptions]="{standalone: true}" class="bg-gray-200 text-gray-700 border-2 border-gray-700 font-medium w-full h-10 rounded-full p-2 focus:outline-none">
+                    <option>Novo</option>
+                    <option>Excelente</option>
+                    <option>Regular</option>
+                    <option>Com defeitos</option>
+                    <option>Obsoleto</option>
+                    <option>Descartado</option>
+                </select>
+            </span>
+            <span class="flex flex-col flex-1">
+                <span>CATEGORIA</span>
+                <select [(ngModel)]="tipo" [ngModelOptions]="{standalone: true}" class="bg-gray-200 text-gray-700 border-2 border-gray-700 font-medium w-full h-10 rounded-full p-2 focus:outline-none">
+                    <option>Tecnologia</option>
+                    <option>Mobiliário</option>
+                    <option>Produção</option>
+                    <option>Transporte</option>
+                    <option>Logística</option>
+                    <option>Segurança</option>
+                    <option>Laboratorial</option>
+                    <option>Industrial</option>
+                </select>
+            </span>
+            <span class="flex flex-col flex-1">
+                <span>DATA</span>
+                <input [(ngModel)]="dt_compra" [ngModelOptions]="{standalone: true}" type="date" id="dataPatrimonio" class="bg-gray-200 text-gray-700 border-2 border-gray-700 font-medium w-full h-10 rounded-full p-2 focus:outline-none">
+            </span>
+        </div>
+        <!-- Área de upload de imagem -->
+        <div class="mt-4 relative">
+            <h1 class="mb-2">IMAGEM:</h1>
+            <div class="flex items-center justify-center border-2 w-[100%] h-64 border-gray-500 border-dashed">
+            <!-- Imagem como elemento de input -->
+            <label for="uploadInput" class="cursor-pointer flex flex-col justify-center items-center">
+                <img [src]="imageUrl || '../../../../assets/imgs/upload-img.png'"  [ngStyle]="{'width.px': imageUrl ? 150 : 100,}" 
+                id="previewImage">
+                <input  type="file" id="uploadInput"   (change)="onFileSelected($event)" accept="image/jpeg, image/png"  class="hidden">
+                <span class="text-center mt-4 font-bold">Clique na área para fazer upload da imagem <br>(JPEG ou PNG)</span>
+            </label>
+        </div>
+        <div class="flex flex-row gap-4 mt-4 items-end justify-end">
+            <button type="button" class="bg-red-300 p-2 rounded-full text-red-700 hover:bg-red-700 hover:text-red-300 transition-all" (click)="alternarAddPatrimonio()">Cancelar</button>
+            <button type="submit" class="bg-green-300 p-2 rounded-full text-green-700 hover:bg-green-700 hover:text-green-300 transition-all">Adicionar</button>
+        </div>
+        </div>
+    </form>
+</div>
