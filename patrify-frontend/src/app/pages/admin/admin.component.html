@@ -1,0 +1,1181 @@
+<div class="space-y-6">
+  <!-- Hero Administrativo -->
+  <section
+    class="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-soft sm:px-8"
+  >
+    <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-600/25 blur-3xl"></div>
+    <div class="absolute -bottom-24 right-24 h-64 w-64 rounded-full bg-accent-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-brand-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-300"
+        >
+          Super Admin · Governança & Planos SaaS
+        </span>
+        <h2 class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          Central de Administração do Sistema
+        </h2>
+        <p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+          Gerencie exclusivamente o cadastro de empresas, controle os 3 planos de assinatura
+          (Básico, Profissional e Enterprise) e administre os patrimônios de todos os clientes.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <button type="button" (click)="openCreateUserModal()" class="btn btn-primary shadow-lg">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Cadastrar empresa
+        </button>
+        <button
+          type="button"
+          (click)="openCreatePatrimonyModal()"
+          class="btn border border-white/15 bg-white/5 text-white hover:bg-white/10"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
+          Novo patrimônio em empresa
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPIs Globais do Sistema -->
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="card card-body">
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-semibold uppercase tracking-wider text-brand-600">
+          Empresas Cadastradas
+        </p>
+        <span class="rounded-lg bg-brand-50 p-2 text-brand-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18" />
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-2xl font-bold text-slate-900">{{ summary.totalUsers }}</p>
+      <p class="mt-1 text-xs text-slate-500">
+        {{ summary.activeUsers }} ativa(s) · {{ summary.suspendedUsers }} suspensa(s)
+      </p>
+    </div>
+
+    <div class="card card-body">
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600">
+          Valor Global Administrado
+        </p>
+        <span class="rounded-lg bg-emerald-50 p-2 text-emerald-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33" />
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-2xl font-bold text-slate-900">
+        {{ summary.totalAssetValue | currency: 'BRL' }}
+      </p>
+      <p class="mt-1 text-xs text-slate-500">Soma financeira de todas as empresas</p>
+    </div>
+
+    <div class="card card-body">
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+          Patrimônios no Banco
+        </p>
+        <span class="rounded-lg bg-slate-100 p-2 text-slate-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5" />
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-2xl font-bold text-slate-900">{{ summary.totalPatrimonies }}</p>
+      <p class="mt-1 text-xs text-slate-500">
+        {{ summary.totalUnits }} unidade(s) física(s) registradas
+      </p>
+    </div>
+
+    <div class="card card-body">
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-semibold uppercase tracking-wider text-amber-600">
+          Operações Globais
+        </p>
+        <span class="rounded-lg bg-amber-50 p-2 text-amber-600">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+          </svg>
+        </span>
+      </div>
+      <p class="mt-2 text-2xl font-bold text-slate-900">
+        {{ summary.totalMaintenances + summary.totalLoans + summary.totalInsurances }}
+      </p>
+      <p class="mt-1 text-xs text-slate-500">
+        {{ summary.totalMaintenances }} OS · {{ summary.totalLoans }} cautelas ·
+        {{ summary.totalInsurances }} apólices
+      </p>
+    </div>
+  </div>
+
+  <!-- Navegação por Abas -->
+  <div class="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+    <button
+      type="button"
+      (click)="activeTab = 'users'"
+      class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+      [ngClass]="
+        activeTab === 'users'
+          ? 'bg-slate-950 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+      "
+    >
+      Empresas & Assinaturas
+      <span
+        class="rounded-full px-2 py-0.5 text-xs"
+        [ngClass]="activeTab === 'users' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'"
+      >
+        {{ summary.totalUsers }}
+      </span>
+    </button>
+
+    <button
+      type="button"
+      (click)="activeTab = 'patrimonies'"
+      class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+      [ngClass]="
+        activeTab === 'patrimonies'
+          ? 'bg-slate-950 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+      "
+    >
+      Todos os Patrimônios
+      <span
+        class="rounded-full px-2 py-0.5 text-xs"
+        [ngClass]="
+          activeTab === 'patrimonies' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+        "
+      >
+        {{ summary.totalPatrimonies }}
+      </span>
+    </button>
+
+    <button
+      type="button"
+      (click)="activeTab = 'plans'"
+      class="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition"
+      [ngClass]="
+        activeTab === 'plans'
+          ? 'bg-slate-950 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+      "
+    >
+      Matriz dos 3 Planos
+    </button>
+  </div>
+
+  <!-- ABA 1: EMPRESAS E ASSINATURAS -->
+  <div *ngIf="activeTab === 'users'" class="space-y-4">
+    <!-- Barra de Busca e Filtro por Plano Estilizada -->
+    <div class="card card-body bg-gradient-to-r from-white to-slate-50/70">
+      <div class="grid gap-3 md:grid-cols-12">
+        <div class="relative md:col-span-7">
+          <svg
+            class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+          <input
+            type="search"
+            [(ngModel)]="userSearch"
+            (keyup.enter)="loadOverview()"
+            placeholder="Buscar empresa por nome fantasia, razão social, CNPJ, e-mail ou atividade..."
+            class="form-input pl-10"
+          />
+        </div>
+
+        <div class="md:col-span-3">
+          <select [(ngModel)]="userPlanFilter" class="form-select">
+            <option value="">Todos os planos (3 níveis)</option>
+            <option value="basic">Plano Básico (Até 50 bens)</option>
+            <option value="pro">Plano Profissional (Até 500 bens)</option>
+            <option value="enterprise">Plano Enterprise (Ilimitado)</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2 md:col-span-2">
+          <button type="button" (click)="loadOverview()" class="btn btn-primary w-full">
+            Filtrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loadingOverview" class="grid gap-4">
+      <div *ngFor="let i of [1, 2, 3]" class="card card-body">
+        <div class="skeleton h-5 w-64"></div>
+        <div class="skeleton mt-3 h-4 w-96"></div>
+      </div>
+    </div>
+
+    <div *ngIf="!loadingOverview && filteredUsers.length > 0" class="grid gap-4">
+      <div
+        *ngFor="let u of filteredUsers"
+        class="card card-body transition hover:border-brand-200 hover:shadow-md"
+        [ngClass]="!u.active ? 'border-red-200 bg-red-50/20' : ''"
+      >
+        <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+          <div class="flex-1 space-y-3">
+            <!-- Badges de Status, Plano e CNPJ -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                class="badge"
+                [ngClass]="u.active ? 'badge-success' : 'bg-red-100 text-red-700'"
+              >
+                {{ u.active ? 'Conta Ativa' : 'Conta Suspensa' }}
+              </span>
+
+              <span class="badge" [ngClass]="getPlanDef(u.plan).badgeClass">
+                ★ {{ getPlanDef(u.plan).name }} ({{ getPlanDef(u.plan).priceLabel }})
+              </span>
+
+              <span
+                class="badge"
+                [ngClass]="u.role === 'admin' ? 'badge-info' : 'badge-neutral'"
+              >
+                {{ u.role === 'admin' ? 'Super Admin' : 'Empresa Cliente' }}
+              </span>
+
+              <span
+                class="rounded-md bg-slate-100 px-2.5 py-0.5 font-mono text-xs font-semibold text-slate-700"
+              >
+                CNPJ: {{ formatCnpjValue(u.cnpj) }}
+              </span>
+            </div>
+
+            <!-- Nome e Razão Social -->
+            <div>
+              <h3 class="text-lg font-bold text-slate-900">
+                {{ u.name }}
+                <span
+                  *ngIf="u.id === auth.currentUser?.id"
+                  class="ml-1 rounded-md bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700"
+                >
+                  Sessão atual
+                </span>
+              </h3>
+              <p class="text-xs text-slate-500">
+                {{ u.legalName || u.name }}
+                <span *ngIf="u.branchType"> · {{ u.branchType }}</span>
+                <span *ngIf="u.companySize"> · {{ u.companySize }}</span>
+              </p>
+            </div>
+
+            <!-- Contatos -->
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600">
+              <span><strong>E-mail:</strong> {{ u.email }}</span>
+              <span *ngIf="u.phone1"><strong>Telefone:</strong> {{ u.phone1 }}</span>
+              <span *ngIf="u.address"><strong>Endereço:</strong> {{ u.address }}</span>
+            </div>
+
+            <!-- Quota de Patrimônios do Plano + Resumo Financeiro -->
+            <div class="grid gap-3 pt-1 sm:grid-cols-2 lg:max-w-2xl">
+              <div class="rounded-xl border border-slate-200/80 bg-slate-50/70 p-3">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-semibold text-slate-700">Uso do Plano:</span>
+                  <span class="font-bold text-slate-900">
+                    {{ u.metrics.patrimonyCount }} /
+                    {{ getPlanDef(u.plan).maxPatrimonies ?? 'Ilimitado' }} bens
+                  </span>
+                </div>
+                <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+                  <div
+                    class="h-full rounded-full transition-all"
+                    [ngClass]="
+                      u.plan === 'enterprise'
+                        ? 'bg-emerald-500'
+                        : u.plan === 'pro'
+                        ? 'bg-brand-600'
+                        : 'bg-slate-700'
+                    "
+                    [style.width.%]="quotaPercent(u)"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between rounded-xl border border-emerald-200/70 bg-emerald-50/50 p-3">
+                <div>
+                  <p class="text-[11px] font-semibold uppercase tracking-wider text-emerald-700">
+                    Patrimônio Administrado
+                  </p>
+                  <p class="mt-0.5 text-sm font-bold text-emerald-950">
+                    {{ u.metrics.totalValue | currency: 'BRL' }}
+                  </p>
+                </div>
+                <span class="rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-emerald-700 shadow-sm">
+                  {{ u.metrics.totalUnits }} un.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Direita: Troca Rápida de Plano + Ações -->
+          <div class="flex flex-col items-start gap-3 xl:items-end">
+            <!-- Seletor Rápido de Plano em 1 Clique -->
+            <div class="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1">
+              <span class="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Plano:
+              </span>
+              <button
+                type="button"
+                (click)="quickChangePlan(u, 'basic')"
+                class="rounded-lg px-2.5 py-1 text-xs font-semibold transition"
+                [ngClass]="
+                  (u.plan || 'basic') === 'basic'
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-200/70'
+                "
+              >
+                Básico
+              </button>
+              <button
+                type="button"
+                (click)="quickChangePlan(u, 'pro')"
+                class="rounded-lg px-2.5 py-1 text-xs font-semibold transition"
+                [ngClass]="
+                  u.plan === 'pro'
+                    ? 'bg-brand-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-200/70'
+                "
+              >
+                Profissional
+              </button>
+              <button
+                type="button"
+                (click)="quickChangePlan(u, 'enterprise')"
+                class="rounded-lg px-2.5 py-1 text-xs font-semibold transition"
+                [ngClass]="
+                  u.plan === 'enterprise'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-600 hover:bg-slate-200/70'
+                "
+              >
+                Enterprise
+              </button>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                (click)="inspectCompanyPatrimonies(u)"
+                class="btn btn-secondary btn-sm"
+              >
+                Patrimônios ({{ u.metrics.patrimonyCount }})
+              </button>
+
+              <button
+                type="button"
+                (click)="openCreatePatrimonyModal(u.id)"
+                class="btn btn-secondary btn-sm"
+              >
+                + Patrimônio
+              </button>
+
+              <button
+                *ngIf="u.id !== auth.currentUser?.id"
+                type="button"
+                (click)="impersonate(u)"
+                class="btn btn-primary btn-sm"
+              >
+                Acessar Conta
+              </button>
+
+              <button
+                type="button"
+                (click)="openEditUserModal(u)"
+                class="btn btn-secondary btn-sm"
+              >
+                Editar / Senha
+              </button>
+
+              <button
+                *ngIf="u.id !== auth.currentUser?.id"
+                type="button"
+                (click)="toggleUserActive(u)"
+                class="btn btn-secondary btn-sm"
+                [ngClass]="u.active ? 'text-amber-700' : 'text-emerald-700'"
+              >
+                {{ u.active ? 'Suspender' : 'Reativar' }}
+              </button>
+
+              <button
+                *ngIf="u.id !== auth.currentUser?.id"
+                type="button"
+                (click)="askDeleteUser(u)"
+                class="btn btn-ghost btn-sm text-red-600 hover:bg-red-50"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA 2: TODOS OS PATRIMÔNIOS DE TODOS OS USUÁRIOS -->
+  <div *ngIf="activeTab === 'patrimonies'" class="space-y-4">
+    <div class="card card-body bg-gradient-to-r from-white to-slate-50/70">
+      <div class="grid gap-3 md:grid-cols-12">
+        <div class="relative md:col-span-4">
+          <svg
+            class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+          <input
+            type="search"
+            [(ngModel)]="patSearch"
+            (keyup.enter)="loadPatrimonies()"
+            placeholder="Buscar bem, série, local ou responsável..."
+            class="form-input pl-10"
+          />
+        </div>
+
+        <div class="md:col-span-3">
+          <select [(ngModel)]="patUserFilter" (change)="loadPatrimonies()" class="form-select">
+            <option value="">Todas as empresas ({{ summary.totalUsers }})</option>
+            <option *ngFor="let u of allUsersCatalog" [value]="u.id">
+              {{ u.name }} ({{ formatCnpjValue(u.cnpj) }})
+            </option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <select [(ngModel)]="patCategoryFilter" (change)="loadPatrimonies()" class="form-select">
+            <option value="">Todas categorias</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2 md:col-span-3">
+          <select [(ngModel)]="patStatusFilter" (change)="loadPatrimonies()" class="form-select">
+            <option value="">Todos status</option>
+            <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+          </select>
+          <button type="button" (click)="clearPatrimonyFilters()" class="btn btn-secondary">
+            Limpar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loadingPatrimonies" class="card card-body">
+      <div class="skeleton h-6 w-64"></div>
+      <div class="skeleton mt-3 h-4 w-96"></div>
+    </div>
+
+    <div
+      *ngIf="!loadingPatrimonies && patrimonies.length === 0"
+      class="card card-body py-14 text-center"
+    >
+      <p class="text-base font-semibold text-slate-900">
+        Nenhum patrimônio encontrado para os filtros selecionados
+      </p>
+      <div class="mt-4 flex justify-center gap-3">
+        <button type="button" (click)="clearPatrimonyFilters()" class="btn btn-secondary">
+          Mostrar todos os patrimônios
+        </button>
+        <button type="button" (click)="openCreatePatrimonyModal()" class="btn btn-primary">
+          Novo patrimônio
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="!loadingPatrimonies && patrimonies.length > 0" class="card overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+          <thead class="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
+            <tr>
+              <th class="px-5 py-3.5">Patrimônio / Série</th>
+              <th class="px-5 py-3.5">Empresa Proprietária</th>
+              <th class="px-5 py-3.5">Local / Responsável</th>
+              <th class="px-5 py-3.5">Status / Condição</th>
+              <th class="px-5 py-3.5 text-right">Valor Total</th>
+              <th class="px-5 py-3.5 text-right">Ações Admin</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            <tr *ngFor="let pat of patrimonies" class="hover:bg-slate-50/80">
+              <td class="px-5 py-4">
+                <div class="font-bold text-slate-900">{{ pat.name }}</div>
+                <div class="mt-0.5 flex items-center gap-2 text-xs text-slate-500">
+                  <a
+                    [routerLink]="['/verificar', pat.serialNumber]"
+                    class="rounded bg-slate-100 px-2 py-0.5 font-mono font-semibold text-brand-700 hover:bg-brand-50"
+                  >
+                    {{ pat.serialNumber }}
+                  </a>
+                  <span>· {{ pat.category }}</span>
+                  <span>· {{ pat.quantity }} un.</span>
+                </div>
+              </td>
+
+              <td class="px-5 py-4">
+                <div class="font-semibold text-slate-900">
+                  {{ pat.owner?.name || 'Empresa Desconhecida' }}
+                </div>
+                <div class="font-mono text-xs text-slate-500">
+                  {{ formatCnpjValue(pat.owner?.cnpj) }}
+                </div>
+              </td>
+
+              <td class="px-5 py-4">
+                <div class="text-slate-800">{{ pat.location }}</div>
+                <div *ngIf="pat.responsible" class="text-xs text-slate-500">
+                  Resp.: {{ pat.responsible }}
+                </div>
+              </td>
+
+              <td class="px-5 py-4">
+                <span
+                  class="badge"
+                  [ngClass]="pat.status === 'Ativo' ? 'badge-success' : 'badge-warning'"
+                >
+                  {{ pat.status }}
+                </span>
+                <span class="ml-1.5 text-xs text-slate-500">{{ pat.condition }}</span>
+              </td>
+
+              <td class="px-5 py-4 text-right">
+                <div class="font-bold text-slate-900">
+                  {{ pat.value * (pat.quantity || 1) | currency: 'BRL' }}
+                </div>
+                <div *ngIf="pat.quantity > 1" class="text-xs text-slate-400">
+                  {{ pat.value | currency: 'BRL' }} / un.
+                </div>
+              </td>
+
+              <td class="px-5 py-4 text-right">
+                <div class="inline-flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    (click)="openEditPatrimonyModal(pat)"
+                    class="btn btn-secondary btn-sm"
+                  >
+                    Editar / Transferir
+                  </button>
+                  <a
+                    [routerLink]="['/verificar', pat.serialNumber]"
+                    class="btn btn-secondary btn-sm"
+                  >
+                    QR
+                  </a>
+                  <button
+                    type="button"
+                    (click)="askDeletePatrimony(pat)"
+                    class="btn btn-ghost btn-sm text-red-600 hover:bg-red-50"
+                  >
+                    Excluir
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA 3: MATRIZ COMPARATIVA DOS 3 PLANOS -->
+  <div *ngIf="activeTab === 'plans'" class="grid gap-6 lg:grid-cols-3">
+    <div
+      *ngFor="let p of plans"
+      class="card flex flex-col justify-between overflow-hidden border-2 transition hover:shadow-lg"
+      [ngClass]="p.accentClass"
+    >
+      <div class="p-6">
+        <div class="flex items-center justify-between">
+          <span class="badge" [ngClass]="p.badgeClass">{{ p.name }}</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
+            {{ p.limitLabel }}
+          </span>
+        </div>
+
+        <p class="mt-4 text-3xl font-extrabold text-slate-900">{{ p.priceLabel }}</p>
+        <p class="mt-1 text-xs text-slate-500">{{ p.tagline }}</p>
+
+        <div class="my-5 border-t border-slate-100"></div>
+
+        <p class="text-xs font-bold uppercase tracking-wider text-emerald-700">
+          Módulos Liberados
+        </p>
+        <ul class="mt-3 space-y-2.5 text-sm text-slate-700">
+          <li *ngFor="let feat of p.features" class="flex items-start gap-2">
+            <span class="mt-0.5 text-emerald-600">✔</span>
+            <span>{{ feat }}</span>
+          </li>
+        </ul>
+
+        <ng-container *ngIf="p.lockedFeatures.length > 0">
+          <p class="mt-5 text-xs font-bold uppercase tracking-wider text-slate-400">
+            Bloqueados neste nível
+          </p>
+          <ul class="mt-2.5 space-y-2 text-xs text-slate-400">
+            <li *ngFor="let locked of p.lockedFeatures" class="flex items-start gap-2 line-through">
+              <span>🔒</span>
+              <span>{{ locked }}</span>
+            </li>
+          </ul>
+        </ng-container>
+      </div>
+
+      <div class="border-t border-slate-100 bg-slate-50 px-6 py-4">
+        <button
+          type="button"
+          (click)="openCreateUserModal(p.id)"
+          class="btn btn-primary w-full"
+        >
+          Cadastrar empresa no {{ p.name }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- MODAL PREMIUM: CADASTRAR / EDITAR EMPRESA, CREDENCIAIS E PLANO         -->
+<!-- ====================================================================== -->
+<div
+  *ngIf="userModalOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm"
+  (click)="closeUserModal()"
+>
+  <div
+    class="max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-3xl border border-slate-200 bg-white shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header com Gradiente -->
+    <div
+      class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-slate-950 px-7 py-5 text-white"
+    >
+      <div class="flex items-center gap-3.5">
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 text-white shadow-md"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold tracking-tight">
+            {{
+              editingUser
+                ? 'Configurar Empresa & Plano de Assinatura'
+                : 'Provisionar Nova Empresa no Sistema'
+            }}
+          </h3>
+          <p class="text-xs text-slate-400">
+            Defina o plano contratado, dados fiscais e credenciais de acesso da organização.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeUserModal()"
+        class="rounded-xl bg-white/10 p-2 text-slate-300 transition hover:bg-white/20 hover:text-white"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form [formGroup]="userForm" (ngSubmit)="saveUser()" class="space-y-6 p-7">
+      <!-- SEÇÃO 1: SELETOR VISUAL DE PLANOS (3 CARDS) -->
+      <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-widest text-brand-600">
+              Passo 1 · Nível de Assinatura
+            </span>
+            <h4 class="text-sm font-bold text-slate-900">
+              Selecione o Plano de Recursos da Empresa
+            </h4>
+          </div>
+          <span class="text-xs text-slate-500">Você pode alterar o plano a qualquer momento</span>
+        </div>
+
+        <div class="mt-4 grid gap-3 md:grid-cols-3">
+          <button
+            *ngFor="let p of plans"
+            type="button"
+            (click)="selectPlanInForm(p.id)"
+            class="relative flex flex-col justify-between rounded-2xl border-2 p-4 text-left transition"
+            [ngClass]="
+              userForm.controls.plan.value === p.id
+                ? 'border-brand-600 bg-white shadow-md ring-4 ring-brand-500/10'
+                : 'border-slate-200 bg-white/70 hover:border-slate-300 hover:bg-white'
+            "
+          >
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="badge" [ngClass]="p.badgeClass">{{ p.name }}</span>
+                <span
+                  class="flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold"
+                  [ngClass]="
+                    userForm.controls.plan.value === p.id
+                      ? 'bg-brand-600 text-white'
+                      : 'border border-slate-300 text-transparent'
+                  "
+                >
+                  ✓
+                </span>
+              </div>
+              <p class="mt-2.5 text-lg font-extrabold text-slate-900">{{ p.priceLabel }}</p>
+              <p class="text-xs font-semibold text-brand-700">{{ p.limitLabel }}</p>
+              <p class="mt-1.5 text-[11px] leading-relaxed text-slate-500">{{ p.tagline }}</p>
+            </div>
+
+            <div class="mt-3 border-t border-slate-100 pt-2.5 text-[11px] text-slate-600">
+              <div *ngFor="let feat of p.features.slice(0, 2)" class="truncate">
+                • {{ feat }}
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 2: DADOS FISCAIS E CORPORATIVOS -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="mb-4 border-b border-slate-100 pb-3">
+          <span class="text-[11px] font-bold uppercase tracking-widest text-brand-600">
+            Passo 2 · Dados Fiscais e Identificação
+          </span>
+          <h4 class="text-sm font-bold text-slate-900">Informações da Pessoa Jurídica</h4>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="form-label">Nome Fantasia da Empresa *</label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Ex.: Horizonte Logística"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Razão Social Completa</label>
+            <input
+              type="text"
+              formControlName="legalName"
+              placeholder="Ex.: Horizonte Logística Integrada S.A."
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">CNPJ *</label>
+            <input
+              type="text"
+              formControlName="cnpj"
+              appCnpjMask
+              placeholder="00.000.000/0001-00"
+              class="form-input font-mono"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Atividade Econômica (CNAE)</label>
+            <input
+              type="text"
+              formControlName="economicActivity"
+              placeholder="Ex.: Transporte rodoviário e logística"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Tipo de Estabelecimento</label>
+            <select formControlName="branchType" class="form-select">
+              <option value="Matriz">Matriz</option>
+              <option value="Filial">Filial</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">Porte Empresarial</label>
+            <select formControlName="companySize" class="form-select">
+              <option value="MEI / Microempresa">MEI / Microempresa</option>
+              <option value="Pequeno porte">Pequeno porte</option>
+              <option value="Médio porte">Médio porte</option>
+              <option value="Grande porte">Grande porte</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="form-label">Endereço Corporativo Completo</label>
+            <input
+              type="text"
+              formControlName="address"
+              placeholder="Av. Paulista, 1000, Bela Vista - São Paulo/SP"
+              class="form-input"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 3: CREDENCIAIS DE ACESSO E GOVERNANÇA -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="mb-4 border-b border-slate-100 pb-3">
+          <span class="text-[11px] font-bold uppercase tracking-widest text-brand-600">
+            Passo 3 · Credenciais & Governança
+          </span>
+          <h4 class="text-sm font-bold text-slate-900">Login, Contato e Nível de Permissão</h4>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label class="form-label">E-mail Corporativo *</label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="contato@empresa.com.br"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">
+              {{ editingUser ? 'Redefinir Senha (opcional)' : 'Senha de Acesso *' }}
+            </label>
+            <div class="relative">
+              <input
+                [type]="showUserPassword ? 'text' : 'password'"
+                formControlName="password"
+                placeholder="Mínimo de 6 caracteres"
+                class="form-input pr-16"
+              />
+              <button
+                type="button"
+                (click)="showUserPassword = !showUserPassword"
+                class="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-slate-100"
+              >
+                {{ showUserPassword ? 'Ocultar' : 'Ver' }}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Telefone / WhatsApp</label>
+            <input
+              type="text"
+              formControlName="phone1"
+              placeholder="(11) 99999-0000"
+              class="form-input"
+            />
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="form-label">Perfil de Permissão na Plataforma</label>
+            <select formControlName="role" class="form-select">
+              <option value="company">
+                Empresa Cliente (Acessa apenas o próprio CNPJ conforme limites do plano)
+              </option>
+              <option value="admin">
+                Super Administrador (Acesso total ao Painel Admin e todas as empresas)
+              </option>
+            </select>
+          </div>
+
+          <div class="flex items-end">
+            <label
+              class="flex w-full cursor-pointer items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 transition hover:border-brand-300"
+            >
+              <span class="text-xs font-bold text-slate-700">Conta Autorizada</span>
+              <input
+                type="checkbox"
+                formControlName="active"
+                class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="flex items-center justify-end gap-3 border-t border-slate-200 pt-4">
+        <button type="button" (click)="closeUserModal()" class="btn btn-secondary px-5">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="savingUser" class="btn btn-primary px-6">
+          {{
+            savingUser
+              ? 'Salvando...'
+              : editingUser
+              ? 'Salvar Empresa e Plano'
+              : 'Confirmar Cadastro da Empresa'
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ====================================================================== -->
+<!-- MODAL PREMIUM: CADASTRAR / EDITAR OU TRANSFERIR PATRIMÔNIO             -->
+<!-- ====================================================================== -->
+<div
+  *ngIf="patModalOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm"
+  (click)="closePatrimonyModal()"
+>
+  <div
+    class="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-slate-200 bg-white shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header com Gradiente -->
+    <div
+      class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-slate-950 px-7 py-5 text-white"
+    >
+      <div class="flex items-center gap-3.5">
+        <div
+          class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-brand-600 text-white shadow-md"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold tracking-tight">
+            {{
+              editingPatrimony
+                ? 'Administrar / Transferir Patrimônio (' + editingPatrimony.serialNumber + ')'
+                : 'Alocar Novo Patrimônio em Empresa'
+            }}
+          </h3>
+          <p class="text-xs text-slate-400">
+            Gerencie especificações técnicas, valores ou transfira a titularidade do bem entre CNPJs.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="closePatrimonyModal()"
+        class="rounded-xl bg-white/10 p-2 text-slate-300 transition hover:bg-white/20 hover:text-white"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form [formGroup]="patrimonyForm" (ngSubmit)="savePatrimony()" class="space-y-6 p-7">
+      <!-- SEÇÃO 1: EMPRESA TITULAR & IDENTIFICAÇÃO -->
+      <div class="rounded-2xl border border-brand-200/70 bg-brand-50/40 p-5">
+        <span class="text-[11px] font-bold uppercase tracking-widest text-brand-700">
+          Titularidade & Classificação
+        </span>
+        <div class="mt-3 grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label class="form-label">Empresa Proprietária do Patrimônio *</label>
+            <select formControlName="userId" class="form-select bg-white font-semibold">
+              <option value="" disabled>Selecione a empresa titular...</option>
+              <option *ngFor="let u of allUsersCatalog" [value]="u.id">
+                {{ u.name }} — CNPJ {{ formatCnpjValue(u.cnpj) }} ({{ getPlanDef(u.plan).name }})
+              </option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label">Nome / Descrição do Bem *</label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Ex.: Empilhadeira Elétrica retrátil / MacBook Pro"
+              class="form-input bg-white"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Categoria Patrimonial *</label>
+            <select formControlName="category" class="form-select bg-white">
+              <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 2: VALORES, QUANTIDADE & ESTADO -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-widest text-emerald-600">
+              Avaliação Financeira & Estado
+            </span>
+            <h4 class="text-sm font-bold text-slate-900">Aquisição, Quantidade e Conservação</h4>
+          </div>
+
+          <div class="rounded-xl bg-emerald-50 px-3.5 py-1.5 text-right">
+            <span class="block text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+              Valor Total do Lote
+            </span>
+            <span class="text-sm font-extrabold text-emerald-900">
+              {{ calculatedBatchTotal | currency: 'BRL' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-4 grid gap-4 sm:grid-cols-3">
+          <div>
+            <label class="form-label">Valor Unitário (R$) *</label>
+            <input type="number" step="0.01" formControlName="value" class="form-input" />
+          </div>
+
+          <div>
+            <label class="form-label">Quantidade de Unidades *</label>
+            <input type="number" formControlName="quantity" class="form-input" />
+          </div>
+
+          <div>
+            <label class="form-label">Data de Compra *</label>
+            <input type="date" formControlName="purchaseDate" class="form-input" />
+          </div>
+
+          <div>
+            <label class="form-label">Status Operacional *</label>
+            <select formControlName="status" class="form-select">
+              <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="form-label">Estado de Conservação *</label>
+            <select formControlName="condition" class="form-select">
+              <option *ngFor="let cond of conditions" [value]="cond">{{ cond }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 3: LOCALIZAÇÃO, NF & OBSERVAÇÕES -->
+      <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500">
+          Alocação Física & Rastreabilidade
+        </span>
+
+        <div class="mt-3 grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="form-label">Localização / Unidade / Sala *</label>
+            <input
+              type="text"
+              formControlName="location"
+              placeholder="Ex.: Matriz SP · 4º Andar · TI"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Colaborador ou Setor Responsável</label>
+            <input
+              type="text"
+              formControlName="responsible"
+              placeholder="Ex.: Coordenação de Infraestrutura"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Número da Nota Fiscal</label>
+            <input
+              type="text"
+              formControlName="invoiceNumber"
+              placeholder="Ex.: NF-e 0049182"
+              class="form-input"
+            />
+          </div>
+
+          <div>
+            <label class="form-label">Vencimento da Garantia</label>
+            <input type="date" formControlName="warrantyUntil" class="form-input" />
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="form-label">Observações Técnicas</label>
+            <textarea
+              rows="2"
+              formControlName="notes"
+              placeholder="Especificações de série, chassi, tag interna ou detalhes adicionais..."
+              class="form-input"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="flex items-center justify-end gap-3 border-t border-slate-200 pt-4">
+        <button type="button" (click)="closePatrimonyModal()" class="btn btn-secondary px-5">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="savingPatrimony" class="btn btn-primary px-6">
+          {{
+            savingPatrimony
+              ? 'Salvando...'
+              : editingPatrimony
+              ? 'Salvar Alterações no Patrimônio'
+              : 'Confirmar Cadastro do Patrimônio'
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Dialogs de confirmação de exclusão -->
+<app-confirm-dialog
+  [open]="!!deleteUserCandidate"
+  title="Excluir empresa e todos os seus dados"
+  [message]="
+    deleteUserCandidate
+      ? 'Tem certeza que deseja excluir a empresa ' +
+        deleteUserCandidate.name +
+        ' e todos os seus patrimônios, manutenções e cautelas?'
+      : ''
+  "
+  confirmLabel="Sim, excluir empresa"
+  (confirm)="confirmDeleteUser()"
+  (cancel)="deleteUserCandidate = null"
+></app-confirm-dialog>
+
+<app-confirm-dialog
+  [open]="!!deletePatrimonyCandidate"
+  title="Excluir patrimônio do sistema"
+  [message]="
+    deletePatrimonyCandidate
+      ? 'Deseja remover o patrimônio ' +
+        deletePatrimonyCandidate.name +
+        ' (' +
+        deletePatrimonyCandidate.serialNumber +
+        ')?'
+      : ''
+  "
+  confirmLabel="Sim, excluir patrimônio"
+  (confirm)="confirmDeletePatrimony()"
+  (cancel)="deletePatrimonyCandidate = null"
+></app-confirm-dialog>

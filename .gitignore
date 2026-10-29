@@ -1,4 +1,42 @@
+# Dependências
 node_modules/
-.env
+.pnp/
+.pnp.js
+
+# Builds
 dist/
+build/
+out-tsc/
+.angular/
+coverage/
+
+# Ambiente
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Uploads locais
+patrify-backend/uploads/
 patrify-backend/api/keyfile.json
+
+# Banco local isolado (scripts/README)
+.mongodata/
+
+# Editores e sistema
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Testes e temporários
+.karma/
+.tmp/
+tmp/

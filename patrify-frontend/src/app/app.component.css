@@ -1,39 +1,31 @@
-/* app.component.css */
-body{
-    width: 100vw;
+:host {
+  display: block;
+  min-height: 100vh;
 }
 
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
+.route-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 10000;
+  height: 3px;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.2);
 }
 
-.loading {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10000;
+.route-progress span {
+  display: block;
+  height: 100%;
+  width: 40%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7c3aed, #e11d74, #f97316);
+  animation: progress-slide 1.1s ease-in-out infinite;
 }
 
-#svg {
-    stroke: #fff;
-    fill-opacity: 0;
-    stroke-width: 12px;
-    width: 200px;
-    stroke-dasharray: 4500;
-    animation: LoadingAnimation 1.2s ease infinite;
-}
-
-@keyframes LoadingAnimation {
-    0% {
-        stroke-dashoffset: 4500;
-    }
-    100% {
-        stroke-dashoffset: 0;
-    }
+@keyframes progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
 }

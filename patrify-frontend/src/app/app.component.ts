@@ -1,40 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationStart, NavigationEnd } from '@angular/router';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { AuthService } from './core/services/auth.service';
+import { LoadingService } from './core/services/loading.service';
 
 @Component({
   selector: 'app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-
-
-
 export class AppComponent implements OnInit {
-  
-  loading: boolean = false;
+  readonly loading$ = this.loading.loading$;
 
-  constructor(private router: Router) { }
+  constructor(
+    private readonly auth: AuthService,
+    private readonly loading: LoadingService
+  ) {}
 
-  
-  ngOnInit() {
-    
-    (window as any).gsap = gsap;
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationStart) {
-        // console.log('Navigation started');
-        this.loading = true;
-  
-      } else if (event instanceof NavigationEnd) {
-        // console.log('Navigation ended');
-       setTimeout(() => {
-        if (this.loading) { // Check if navigation is still ongoing
-          // console.log('Navigation took too long, resetting loading state');
-          this.loading = false;
-        }
-      }, 800); // Adjust the timeout duration as needed
-      }
-    });
+  ngOnInit(): void {
+    if (this.auth.hasValidToken()) {
+      this.auth.loadMe().subscribe({ error: () => undefined });
+    }
   }
 }

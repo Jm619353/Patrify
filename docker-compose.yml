@@ -1,0 +1,79 @@
+services:
+  db:
+    image: mongo:7
+    container_name: patrify-db
+    restart: unless-stopped
+    volumes:
+      - patrify_mongodata:/data/db
+    ports:
+      - '27017:27017'
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.runCommand({ ping: 1 }).ok']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ./patrify-backend
+    container_name: patrify-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      LOG_LEVEL: info
+      MONGODB_URI: mongodb://db:27017/patrify
+      DATABASE_URL: mongodb://db:27017/patrify
+      MONGODB_DB_NAME: patrify
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production-with-32-plus-chars}
+      JWT_EXPIRES_IN: 2h
+      BASE_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:8080
+      CORS_ORIGINS: http://localhost:8080,http://localhost:4200,http://localhost:4300
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      EMAIL_FROM: ${EMAIL_FROM:-Patrify <no-reply@patrify.app>}
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
+      BRASIL_API_URL: https://brasilapi.com.br/api/cnpj/v1
+      UPLOAD_DIR: /app/uploads
+      MAX_UPLOAD_MB: 5
+    command: >
+      sh -c "node src/database/migrate.js &&
+             node src/database/seed.js &&
+             node src/server.js"
+    ports:
+      - '3000:3000'
+    volumes:
+      - patrify_uploads:/app/uploads
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        ]
+      interval: 20s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./patrify-frontend
+    container_name: patrify-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - '8080:80'
+
+volumes:
+  patrify_mongodata:
+  patrify_uploads:

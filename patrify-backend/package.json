@@ -1,46 +1,52 @@
 {
-  "name": "backend-tcc-akievo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "patrify-api",
+  "version": "2.0.0",
+  "private": true,
+  "description": "API REST do Patrify - sistema de gestão patrimonial",
+  "main": "src/server.js",
   "engines": {
-    "node": "20.x"
+    "node": ">=20"
   },
   "scripts": {
-    "start": "nodemon index.js",
-    "test": "mocha tests/**/*.test.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "mocha \"tests/**/*.test.js\" --exit",
+    "test:watch": "mocha \"tests/**/*.test.js\" --watch",
+    "lint": "eslint \"src/**/*.js\" \"tests/**/*.js\"",
+    "lint:fix": "eslint \"src/**/*.js\" \"tests/**/*.js\" --fix",
+    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\"",
+    "db:migrate": "node src/database/migrate.js",
+    "db:seed": "node src/database/seed.js",
+    "db:setup": "npm run db:migrate && npm run db:seed",
+    "db:local:init": "node scripts/local-db.js init",
+    "db:local:start": "node scripts/local-db.js start",
+    "db:local:stop": "node scripts/local-db.js stop",
+    "db:local:status": "node scripts/local-db.js status"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@google-cloud/storage": "^7.11.1",
     "@vercel/blob": "^0.23.3",
-    "axios": "^1.6.7",
-    "bcrypt": "^5.1.1",
-    "chai-http": "^4.4.0",
+    "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.1.5",
-    "express-session": "^1.18.0",
-    "file-type": "^19.0.0",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
-    "mime": "^4.0.1",
-    "moment-timezone": "^0.5.44",
+    "mongodb": "^7.7.0",
     "multer": "^1.4.5-lts.1",
-    "multer-google-storage": "^1.3.0",
-    "mysql": "^2.18.1",
-    "mysql2": "^3.9.7",
-    "nodemailer": "^6.9.6",
-    "nodemon": "^3.0.1",
-    "path": "^0.12.7",
-    "pg": "^8.11.5",
-    "request-ip": "^3.3.0",
-    "temp": "^0.9.4"
+    "nodemailer": "^6.9.15",
+    "pino": "^9.5.0",
+    "pino-http": "^10.3.0",
+    "qrcode": "^1.5.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "chai": "^4.3.10",
-    "mocha": "^10.2.0",
-    "supertest": "^6.3.3"
+    "chai": "^4.5.0",
+    "eslint": "^8.57.1",
+    "mocha": "^10.8.2",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
+    "supertest": "^7.0.0"
   }
 }

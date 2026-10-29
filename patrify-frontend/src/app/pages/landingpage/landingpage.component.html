@@ -1,115 +1,535 @@
-<body>
+<div class="min-h-screen bg-white text-slate-900">
+  <!-- Cabeçalho -->
+  <header class="sticky top-0 z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur">
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <a
+        routerLink="/patrify"
+        class="flex items-center gap-2.5 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40"
+        aria-label="Patrify — página inicial"
+      >
+        <span
+          class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-accent-500 text-sm font-bold text-white shadow-sm"
+          aria-hidden="true"
+        >
+          P
+        </span>
+        <span class="text-lg font-bold tracking-tight text-slate-900">Patrify</span>
+      </a>
 
-<button id="btnToTop" class="flex items-center justify-center fixed z-50 bg-white w-14 h-14 rounded-full btnToTop">
-  <svg data-name="1-Arrow Up" id="arrowTop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="m26.71 10.29-10-10a1 1 0 0 0-1.41 0l-10 10 1.41 1.41L15 3.41V32h2V3.41l8.29 8.29z"/></svg>
-</button>
+      <nav class="hidden items-center gap-7 md:flex" aria-label="Navegação principal">
+        <button type="button" class="text-sm font-medium text-slate-600 transition hover:text-brand-700" (click)="scrollTo('recursos')">
+          Recursos
+        </button>
+        <button type="button" class="text-sm font-medium text-slate-600 transition hover:text-brand-700" (click)="scrollTo('funcionalidades')">
+          Funcionalidades
+        </button>
+        <button type="button" class="text-sm font-medium text-slate-600 transition hover:text-brand-700" (click)="scrollTo('beneficios')">
+          Benefícios
+        </button>
+        <button type="button" class="text-sm font-medium text-slate-600 transition hover:text-brand-700" (click)="scrollTo('como-funciona')">
+          Como funciona
+        </button>
+      </nav>
 
-<div class="wallpaper flex items-center overflow-hidden">
-  <div class="heroLeft flex justify-center items-center flex-col">
-    <h1 class="font-semibold text-9xl text-white">Patrify</h1>
-    <p class="text-white text-[28px] relative right-[38px] bottom-4 text-nowrap">Gestão de Bens e Ativos</p>
-    <button (click)="login()">Login/Registro</button>
-    <img src="../../../assets/imgs/scrollicon.png" class="animate-bounce">
-  </div>
-</div>     
-<div class="contentOne" id="contentOne">
-  <div class="contentOne-left">
-    <h1 class="font-bold" id="contentOne-title">APLICAÇÃO</h1>
-  </div>
-  <div class="contentOne-right">
-    <p id="contentOne-subtitle">Patrify é um gestor de bens e ativos que facilita a adição e organização de patrimônios em empresas. Com uma interface intuitiva, permite gerar números de série únicos, oferecendo uma solução prática para o controle eficiente de ativos.</p>
-  </div>
-</div>  
-
-<div class="patterns">
-  <div class="patternDot"></div>
-  <div class="patternLine"></div>
-  <div class="patternLine2"></div>
-</div>
-
-<div class="contentTwo">
-
-
-  <div class="contentTwo-title">
-    <h1 class="font-bold" id="outtext">BENEFÍCIOS</h1>
-  </div>
-  <div class="contentTwo-cards">
-    <div class="card" id="card1">
-      <h1>Gestão Eficiente de Ativos:</h1>
-      <p>Organização e Controle.</p>
-    </div>
-    <div class="card" id="card2">
-      <h1>Facilidade de Uso:</h1>
-      <p>Interface amigável e moderna.</p>
-    </div>
-    <div class="card" id="card3">
-      <h1>Automatização de Processos:</h1>
-      <p>Geração de códigos de série.</p>
-    </div>
-    <div class="card" id="card4">
-      <h1>Integração com APIs inteligentes:</h1>
-      <p>Economizando tempo do Usuário.</p>
-    </div>
-  </div>
-</div>
-<div class="contentThree">
-  <div class="contentThree-wave">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#d6d6d6" fill-opacity="1" d="M0,128L0,160L144,160L144,128L288,128L288,64L432,64L432,160L576,160L576,96L720,96L720,64L864,64L864,64L1008,64L1008,160L1152,160L1152,288L1296,288L1296,256L1440,256L1440,0L1296,0L1296,0L1152,0L1152,0L1008,0L1008,0L864,0L864,0L720,0L720,0L576,0L576,0L432,0L432,0L288,0L288,0L144,0L144,0L0,0L0,0Z"></path></svg>  </div>
-  <div class="contentThree-functions">
-    <div class="contentThree-title">
-      <h1 id="contentThree-title">FUNCIONALIDADES</h1>
-      <div class="titleLine"></div>
-    </div>
-    <div class="contentThree-list">
-      <div class = "main">
-        <div class = "column expanded"> 
-          <div class = "inner-element active">
-            <h2>INVENTÁRIO</h2>
-            <p>O inventário do Patrify é uma ferramenta para gerenciar bens e ativos, permitindo adicionar e visualizar itens com códigos de série e QR codes automáticos. Além de incluir filtros para melhor organização.</p>          
-          </div>
-          <div class="icons"><p>1</p></div>
-        </div>
-          <div class = "column"> 
-          <div class = "inner-element">
-            <h2>PÁGINA DO USUÁRIO</h2>
-            <p>Mostra as informaçôes básicas referentes ao usuário e a empresa cadastrada.</p>
-          </div>
-            <div class="icons"><p>2</p></div>
-        </div>
-          <div class = "column"> 
-          <div class = "inner-element">
-            <h2>DESCARTE</h2>
-            <p>O recurso de Descarte Inteligente do Patrify exibe as localizações das empresas que estão aptas a realizar o descarte adequado conforme especificado na barra de pesquisa. Isso facilita aos usuários encontrar facilmente pontos de descarte apropriados, promovendo uma gestão responsável de resíduos e materiais.</p>
-          </div>
-            <div class="icons"><p>3</p></div>
-        </div>
-          <div class = "column"> 
-          <div class = "inner-element">
-            <h2>GRÁFICOS</h2>
-            <p>É uma ferramenta essencial localizada na página principal após o login. Esta ferramenta apresenta gráficos dinâmicos que se atualizam automaticamente conforme o filtro aplicado, proporcionando uma visão clara e atualizada dos dados relevantes.</p>
-          </div>
-            <div class="icons"><p>4</p></div>
-        </div>
+      <div class="flex items-center gap-2">
+        <button type="button" class="btn btn-primary btn-sm" (click)="goToLogin()">
+          Acessar plataforma
+        </button>
       </div>
     </div>
-  </div>
-</div>
+  </header>
 
-<div class="Footer">
-  <div class="footerTop">
-    <div class="footerTop-left"></div>
-    <div class="footerTop-center">
-      <div class="footerTop-centerLeft">
-        <img src="../../../assets/imgs/patrify letter logo.png" alt="Patrify">
+  <main>
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-slate-950 text-white">
+      <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+        <div class="absolute -left-24 top-0 h-80 w-80 rounded-full bg-brand-600/30 blur-3xl"></div>
+        <div class="absolute -right-16 top-10 h-96 w-96 rounded-full bg-accent-500/20 blur-3xl"></div>
+        <div class="absolute inset-0 hero-grid opacity-40"></div>
       </div>
-      <div class="footerTop-centerCenter">
-        &copy; 2024 Patrify - Todos os Direitos Reservados.
+
+      <div class="relative mx-auto grid max-w-6xl gap-14 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-24">
+        <div class="animate-fade-up">
+          <span class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-brand-100">
+            <span class="h-1.5 w-1.5 rounded-full bg-accent-400" aria-hidden="true"></span>
+            Gestão patrimonial para empresas
+          </span>
+
+          <h1 class="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
+            Controle cada bem.
+            <span class="block bg-gradient-to-r from-brand-300 via-brand-200 to-accent-400 bg-clip-text text-transparent">
+              Decida com dados.
+            </span>
+          </h1>
+
+          <p class="mt-6 max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">
+            Inventário, indicadores e descarte responsável em uma plataforma única. O Patrify organiza
+            o ciclo de vida dos ativos da sua empresa — do cadastro à destinação final.
+          </p>
+
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+            <button type="button" class="btn btn-primary px-6 py-3 text-base" (click)="goToRegister()">
+              Começar agora
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn border border-white/20 bg-white/5 px-6 py-3 text-base text-white hover:bg-white/10"
+              (click)="goToLogin()"
+            >
+              Já tenho conta
+            </button>
+          </div>
+
+          <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-300">
+            <li class="flex items-center gap-2">
+              <svg class="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+              </svg>
+              Sem instalação
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+              </svg>
+              Dados isolados por empresa
+            </li>
+            <li class="flex items-center gap-2">
+              <svg class="h-4 w-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+              </svg>
+              Exportação em CSV
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mockup ilustrativo -->
+        <div class="relative mx-auto w-full max-w-lg animate-fade-up delay-2" aria-hidden="true">
+          <div class="absolute -inset-4 rounded-[2rem] bg-gradient-to-tr from-brand-500/25 to-accent-400/20 blur-2xl"></div>
+          <div class="relative overflow-hidden rounded-2xl border border-white/10 bg-slate-900/85 shadow-2xl backdrop-blur">
+            <div class="flex items-center gap-2 border-b border-white/10 px-4 py-3">
+              <span class="h-2.5 w-2.5 rounded-full bg-rose-400/80"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-amber-300/80"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-400/80"></span>
+              <span class="ml-3 rounded-md bg-white/5 px-2 py-0.5 text-[10px] text-slate-400">patrify.app/home</span>
+            </div>
+
+            <div class="space-y-4 p-5">
+              <div class="flex items-end justify-between gap-4">
+                <div>
+                  <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Valor ativo</p>
+                  <p class="mt-1 text-2xl font-bold text-white">R$ 120.000</p>
+                </div>
+                <span class="badge badge-success">+12,4%</span>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2">
+                <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p class="text-[10px] text-slate-400">Bens</p>
+                  <p class="mt-1 text-sm font-semibold text-white">128</p>
+                </div>
+                <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p class="text-[10px] text-slate-400">Ativos</p>
+                  <p class="mt-1 text-sm font-semibold text-white">96</p>
+                </div>
+                <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p class="text-[10px] text-slate-400">Ociosos</p>
+                  <p class="mt-1 text-sm font-semibold text-white">32</p>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-white/10 bg-white/5 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400">Evolução mensal</p>
+                  <p class="text-[10px] text-slate-500">2024</p>
+                </div>
+                <div class="mt-3 flex h-24 items-end gap-2">
+                  <div
+                    *ngFor="let bar of chartBars"
+                    class="flex-1 rounded-t bg-gradient-to-t from-brand-600 to-accent-400"
+                    [style.height.%]="bar"
+                  ></div>
+                </div>
+                <div class="mt-2 flex justify-between text-[9px] text-slate-500">
+                  <span *ngFor="let month of chartMonths">{{ month }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="footerTop-centerRight">
-        <a href="https://github.com/maylon-fernandes/patrify-angular" target="_blank">GitHub</a>
+    </section>
+
+    <!-- Recursos -->
+    <section id="recursos" class="scroll-mt-20 bg-white py-20 sm:py-24">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="max-w-2xl">
+          <p class="section-title text-brand-700">Recursos</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            O essencial para uma gestão patrimonial séria
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            Cada recurso foi pensado para reduzir planilhas paralelas, retrabalho e perda de
+            informação sobre os bens da empresa.
+          </p>
+        </div>
+
+        <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <article class="card card-body transition hover:-translate-y-0.5 hover:shadow-soft">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 7.5 12 12l8-4.5M12 12v9" />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Inventário completo</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Cadastro com categoria, conservação, localização, quantidade, valor e imagem do bem.
+            </p>
+          </article>
+
+          <article class="card card-body transition hover:-translate-y-0.5 hover:shadow-soft">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 19V5m0 14h16M8 16V9m4 7V6m4 10v-4" />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Dashboard executivo</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Valor ativo, bens ociosos, descartados e evolução mensal calculados direto no banco.
+            </p>
+          </article>
+
+          <article class="card card-body transition hover:-translate-y-0.5 hover:shadow-soft">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z" />
+                <circle cx="12" cy="10" r="2.5" />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Descarte inteligente</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Pontos de coleta próximos, filtrados por material e raio, com rota para o Google Maps.
+            </p>
+          </article>
+
+          <article class="card card-body transition hover:-translate-y-0.5 hover:shadow-soft">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.4 3 8.4 7 10 4-1.6 7-5.6 7-10V6l-7-3Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4" />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Segurança da conta</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Login por CNPJ, JWT com expiração, senha com bcrypt e recuperação por token de uso único.
+            </p>
+          </article>
+
+          <article class="card card-body transition hover:-translate-y-0.5 hover:shadow-soft">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="11" cy="11" r="6" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="m16 16 4 4M8.5 11h5" />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Busca e filtros</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Encontre qualquer bem por nome, série ou localização e combine status, categoria e período.
+            </p>
+          </article>
+
+          <article class="card card-body transition hover:-translate-y-0.5 hover:shadow-soft">
+            <span class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
+              </svg>
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Relatórios em CSV</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Exporte o resultado dos filtros aplicados e leve os dados para o financeiro ou auditoria.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Funcionalidades em detalhe -->
+    <section id="funcionalidades" class="scroll-mt-20 border-y border-slate-200/70 bg-slate-50 py-20 sm:py-24">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="max-w-2xl">
+          <p class="section-title text-brand-700">Funcionalidades</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Veja o sistema por dentro</h2>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            Navegue pelas áreas do produto e entenda como cada uma apoia a rotina da equipe.
+          </p>
+        </div>
+
+        <div class="mt-10 flex flex-wrap gap-2" role="tablist" aria-label="Áreas do sistema">
+          <button
+            *ngFor="let feature of features"
+            type="button"
+            role="tab"
+            class="feature-tab"
+            [attr.aria-selected]="feature.id === activeFeatureId"
+            [attr.aria-controls]="'painel-funcionalidade'"
+            (click)="selectFeature(feature.id)"
+          >
+            {{ feature.label }}
+          </button>
+        </div>
+
+        <div
+          class="mt-8 grid gap-8 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-card sm:p-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center"
+          [attr.id]="'painel-funcionalidade'"
+          role="tabpanel"
+        >
+          <div>
+            <h3 class="text-2xl font-bold tracking-tight text-slate-900">{{ activeFeature.title }}</h3>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ activeFeature.description }}</p>
+            <ul class="mt-5 space-y-2.5">
+              <li *ngFor="let bullet of activeFeature.bullets" class="flex items-start gap-2.5 text-sm text-slate-700">
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" />
+                </svg>
+                {{ bullet }}
+              </li>
+            </ul>
+            <button type="button" class="btn btn-secondary mt-6" (click)="goToRegister()">
+              Experimentar o Patrify
+            </button>
+          </div>
+
+          <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 p-2">
+            <img
+              [src]="activeFeature.image"
+              [alt]="activeFeature.imageAlt"
+              class="aspect-[16/10] w-full rounded-lg object-cover object-top shadow-sm"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefícios -->
+    <section id="beneficios" class="scroll-mt-20 bg-white py-20 sm:py-24">
+      <div class="mx-auto grid max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center">
+        <div>
+          <p class="section-title text-brand-700">Benefícios</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            Menos planilhas. Mais clareza sobre o que a empresa possui.
+          </h2>
+          <p class="mt-4 text-base leading-relaxed text-slate-600">
+            O Patrify centraliza a informação que hoje fica espalhada entre setores e arquivos
+            locais. A equipe consulta, atualiza e presta contas com uma única fonte de verdade.
+          </p>
+
+          <dl class="mt-8 space-y-5">
+            <div class="flex gap-4">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </span>
+              <div>
+                <dt class="text-sm font-semibold text-slate-900">Economia de tempo</dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+                  Cadastro rápido, código de série automático e filtros que evitam buscas manuais.
+                </dd>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-6m4 6V7m4 10v-4M5 21h14" />
+                </svg>
+              </span>
+              <div>
+                <dt class="text-sm font-semibold text-slate-900">Decisão baseada em dados</dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+                  Indicadores consolidados mostram onde há capital parado e o que pode ser descartado.
+                </dd>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.4 3 8.4 7 10 4-1.6 7-5.6 7-10V6l-7-3Z" />
+                </svg>
+              </span>
+              <div>
+                <dt class="text-sm font-semibold text-slate-900">Conformidade e rastreabilidade</dt>
+                <dd class="mt-1 text-sm leading-relaxed text-slate-600">
+                  Histórico de conservação, baixa por descarte e isolamento dos dados por empresa.
+                </dd>
+              </div>
+            </div>
+          </dl>
+        </div>
+
+        <div class="relative">
+          <div class="absolute -inset-3 rounded-3xl bg-gradient-to-tr from-brand-100 via-white to-accent-400/10 blur-xl" aria-hidden="true"></div>
+          <div class="relative grid gap-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-soft sm:grid-cols-2">
+            <div class="rounded-xl bg-slate-50 p-5">
+              <p class="text-3xl font-extrabold tracking-tight text-brand-700">100%</p>
+              <p class="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">web e responsivo</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-5">
+              <p class="text-3xl font-extrabold tracking-tight text-brand-700">8</p>
+              <p class="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">categorias de bens</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-5">
+              <p class="text-3xl font-extrabold tracking-tight text-brand-700">6</p>
+              <p class="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">estados de conservação</p>
+            </div>
+            <div class="rounded-xl bg-slate-50 p-5">
+              <p class="text-3xl font-extrabold tracking-tight text-brand-700">CSV</p>
+              <p class="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">exportação imediata</p>
+            </div>
+            <div class="rounded-xl border border-brand-100 bg-brand-50 p-5 sm:col-span-2">
+              <p class="text-sm font-semibold text-brand-900">
+                “A informação do patrimônio deixa de depender de uma pessoa ou de um arquivo local.”
+              </p>
+              <p class="mt-2 text-xs text-brand-700/80">Proposta de valor do Patrify</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Como funciona -->
+    <section id="como-funciona" class="scroll-mt-20 border-t border-slate-200/70 bg-slate-50 py-20 sm:py-24">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="max-w-2xl">
+          <p class="section-title text-brand-700">Como funciona</p>
+          <h2 class="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Do cadastro ao descarte em três passos</h2>
+        </div>
+
+        <ol class="mt-12 grid gap-6 md:grid-cols-3">
+          <li class="card card-body">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">1</span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Crie a conta com o CNPJ</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Os dados da empresa são preenchidos automaticamente a partir da base pública. Você só
+              confirma o acesso.
+            </p>
+          </li>
+          <li class="card card-body">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">2</span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Cadastre e acompanhe os bens</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Registre cada item, anexe uma foto e acompanhe valor, conservação e localização no
+              dashboard.
+            </p>
+          </li>
+          <li class="card card-body">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-700 text-sm font-bold text-white">3</span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">Descarte com responsabilidade</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              Encontre pontos de coleta próximos, encaminhe o material e mantenha o histórico do que
+              saiu do inventário.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-white py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-800 via-brand-700 to-accent-600 px-6 py-12 text-white shadow-soft sm:px-12">
+          <div class="pointer-events-none absolute -right-10 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl" aria-hidden="true"></div>
+          <div class="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+            <div class="max-w-2xl">
+              <h2 class="text-2xl font-bold tracking-tight sm:text-3xl">
+                Pronto para organizar o patrimônio da sua empresa?
+              </h2>
+              <p class="mt-3 text-sm leading-relaxed text-white/85 sm:text-base">
+                Crie sua conta gratuitamente e comece pelo inventário. Se preferir conhecer antes,
+                entre com as credenciais de demonstração.
+              </p>
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row">
+              <button type="button" class="btn bg-white px-6 py-3 text-brand-800 hover:bg-brand-50" (click)="goToRegister()">
+                Criar conta
+              </button>
+              <button
+                type="button"
+                class="btn border border-white/30 bg-transparent px-6 py-3 text-white hover:bg-white/10"
+                (click)="goToLogin()"
+              >
+                Entrar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="border-t border-slate-200 bg-slate-950 text-slate-300">
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-600 to-accent-500 text-sm font-bold text-white"
+            aria-hidden="true"
+          >
+            P
+          </span>
+          <span class="text-lg font-bold tracking-tight text-white">Patrify</span>
+        </div>
+        <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-400">
+          Gestão patrimonial inteligente para empresas: inventário, indicadores e descarte
+          responsável em uma única plataforma.
+        </p>
+      </div>
+
+      <nav aria-label="Produto">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Produto</h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><button type="button" class="transition hover:text-white" (click)="scrollTo('recursos')">Recursos</button></li>
+          <li><button type="button" class="transition hover:text-white" (click)="scrollTo('funcionalidades')">Funcionalidades</button></li>
+          <li><button type="button" class="transition hover:text-white" (click)="scrollTo('beneficios')">Benefícios</button></li>
+          <li><button type="button" class="transition hover:text-white" (click)="scrollTo('como-funciona')">Como funciona</button></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Conta">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500">Conta</h2>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><button type="button" class="transition hover:text-white" (click)="goToLogin()">Entrar</button></li>
+          <li><button type="button" class="transition hover:text-white" (click)="goToRegister()">Criar conta</button></li>
+          <li><a routerLink="/senha" class="transition hover:text-white">Recuperar senha</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="border-t border-white/10">
+      <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-6 text-xs text-slate-500 sm:flex-row sm:px-6">
+        <p>&copy; {{ currentYear }} Patrify. Todos os direitos reservados.</p>
+        <p>Feito para equipes de TI, facilities e financeiro.</p>
       </div>
     </div>
-    <div class="footerTop-right"></div>
-  </div>
+  </footer>
+
+  <!-- Voltar ao topo -->
+  <button
+    type="button"
+    class="fixed bottom-6 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-slate-900 text-white shadow-lg transition hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/50"
+    [class.pointer-events-none]="!showBackToTop"
+    [class.opacity-0]="!showBackToTop"
+    [attr.aria-hidden]="!showBackToTop"
+    [attr.tabindex]="showBackToTop ? 0 : -1"
+    aria-label="Voltar ao topo"
+    (click)="scrollToTop()"
+  >
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 19V5m-7 7 7-7 7 7" />
+    </svg>
+  </button>
 </div>
-</body>              

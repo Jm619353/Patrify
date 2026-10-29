@@ -1,0 +1,357 @@
+<div class="space-y-6">
+  <!-- Cabeçalho -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight text-slate-900">
+        Plano de Manutenções e Ordens de Serviço
+      </h2>
+      <p class="mt-1 text-sm text-slate-500">
+        Controle manutenções preventivas, corretivas, calibrações, garantias e custos operacionais da
+        empresa.
+      </p>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="openCreate()">
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Nova Ordem de Manutenção
+    </button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="card card-body">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Ordens Abertas</p>
+      <p class="mt-2 text-3xl font-bold text-rose-600">{{ summary.open }}</p>
+      <p class="mt-1 text-xs text-slate-500">Aguardando início ou fornecedor</p>
+    </div>
+
+    <div class="card card-body">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Em Andamento</p>
+      <p class="mt-2 text-3xl font-bold text-amber-600">{{ summary.inProgress }}</p>
+      <p class="mt-1 text-xs text-slate-500">Em execução técnica no momento</p>
+    </div>
+
+    <div class="card card-body">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Concluídas</p>
+      <p class="mt-2 text-3xl font-bold text-emerald-600">{{ summary.completed }}</p>
+      <p class="mt-1 text-xs text-slate-500">De {{ summary.total }} ordens registradas</p>
+    </div>
+
+    <div class="card card-body">
+      <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        Custo Total de Manutenção
+      </p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">
+        {{ summary.totalCost | currency: 'BRL' }}
+      </p>
+      <p class="mt-1 text-xs text-slate-500">Investimento em preservação dos ativos</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card card-body">
+    <div class="grid gap-3 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <label class="label">Pesquisar</label>
+        <input
+          type="search"
+          class="input"
+          placeholder="Equipamento, código de série, serviço ou fornecedor..."
+          [(ngModel)]="filters.search"
+          (keyup.enter)="load()"
+        />
+      </div>
+
+      <div class="lg:col-span-2">
+        <label class="label">Status</label>
+        <select class="input" [(ngModel)]="filters.status" (change)="load()">
+          <option value="">Todos</option>
+          <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+        </select>
+      </div>
+
+      <div class="lg:col-span-2">
+        <label class="label">Tipo</label>
+        <select class="input" [(ngModel)]="filters.type" (change)="load()">
+          <option value="">Todos</option>
+          <option *ngFor="let tp of types" [value]="tp">{{ tp }}</option>
+        </select>
+      </div>
+
+      <div class="lg:col-span-2">
+        <label class="label">Prioridade</label>
+        <select class="input" [(ngModel)]="filters.priority" (change)="load()">
+          <option value="">Todas</option>
+          <option *ngFor="let pr of priorities" [value]="pr">{{ pr }}</option>
+        </select>
+      </div>
+
+      <div class="flex items-end gap-2 lg:col-span-1">
+        <button type="button" class="btn btn-secondary w-full" (click)="load()">Filtrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Ordens -->
+  <div class="table-shell">
+    <div class="overflow-x-auto">
+      <table class="table-base">
+        <thead>
+          <tr>
+            <th>Patrimônio</th>
+            <th>Serviço / Fornecedor</th>
+            <th>Tipo</th>
+            <th>Prioridade</th>
+            <th>Status</th>
+            <th>Data Programada</th>
+            <th class="text-right">Custo</th>
+            <th class="text-right">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody *ngIf="!loading && orders.length > 0">
+          <tr *ngFor="let order of orders">
+            <td>
+              <div>
+                <p class="font-semibold text-slate-900">{{ order.patrimonyName }}</p>
+                <a
+                  [routerLink]="['/verificar', order.serialNumber]"
+                  class="font-mono text-xs font-semibold text-brand-700 hover:underline"
+                >
+                  {{ order.serialNumber }}
+                </a>
+              </div>
+            </td>
+            <td>
+              <p class="max-w-xs truncate font-medium text-slate-800" [title]="order.title">
+                {{ order.title }}
+              </p>
+              <p class="text-xs text-slate-500">{{ order.provider || 'Equipe interna' }}</p>
+            </td>
+            <td>
+              <span class="badge badge-neutral">{{ order.type }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="priorityBadge(order.priority)">
+                {{ order.priority }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="statusBadge(order.status)">{{ order.status }}</span>
+            </td>
+            <td class="text-slate-600">{{ order.scheduledDate | date: 'dd/MM/yyyy' : 'UTC' }}</td>
+            <td class="text-right font-semibold text-slate-900">
+              {{ order.cost | currency: 'BRL' }}
+            </td>
+            <td>
+              <div class="flex justify-end gap-1">
+                <button
+                  *ngIf="order.status === 'Aberta'"
+                  type="button"
+                  class="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 transition hover:bg-amber-100"
+                  (click)="changeStatus(order, 'Em andamento')"
+                  title="Iniciar execução"
+                >
+                  Iniciar
+                </button>
+                <button
+                  *ngIf="order.status === 'Aberta' || order.status === 'Em andamento'"
+                  type="button"
+                  class="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100"
+                  (click)="changeStatus(order, 'Concluída')"
+                  title="Marcar como concluída"
+                >
+                  Concluir
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+                  (click)="printServiceOrder(order)"
+                  title="Imprimir Ordem de Serviço (OS)"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg p-2 text-slate-500 transition hover:bg-brand-50 hover:text-brand-700"
+                  (click)="openEdit(order)"
+                  title="Editar"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600"
+                  (click)="deleteOrder(order)"
+                  title="Excluir"
+                >
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="!loading && orders.length === 0" class="empty-state">
+      <h3 class="text-base font-semibold text-slate-900">Nenhuma ordem de manutenção encontrada</h3>
+      <p class="mt-1 text-sm text-slate-500">
+        Registre manutenções preventivas e corretivas para controlar a vida útil dos ativos.
+      </p>
+      <button type="button" class="btn btn-primary mt-4" (click)="openCreate()">
+        Abrir primeira ordem
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Ordem de Manutenção -->
+<div
+  *ngIf="modalOpen"
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/50 p-4 backdrop-blur-sm"
+>
+  <div class="flex min-h-full items-start justify-center py-6">
+    <div class="w-full max-w-2xl rounded-2xl bg-white shadow-2xl">
+      <div class="flex items-start justify-between border-b border-slate-100 px-6 py-5">
+        <div>
+          <h3 class="text-lg font-semibold text-slate-900">
+            {{ editing ? 'Editar Ordem de Manutenção' : 'Nova Ordem de Manutenção' }}
+          </h3>
+          <p class="mt-1 text-xs text-slate-500">
+            O evento será automaticamente vinculado ao histórico de auditoria do patrimônio.
+          </p>
+        </div>
+        <button
+          type="button"
+          class="rounded-lg p-2 text-slate-400 hover:bg-slate-100"
+          (click)="closeModal()"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form (ngSubmit)="save()" class="space-y-4 px-6 py-5">
+        <div>
+          <label class="label">Patrimônio *</label>
+          <select
+            name="patrimonyId"
+            class="input"
+            [(ngModel)]="form.patrimonyId"
+            [disabled]="!!editing"
+            required
+          >
+            <option *ngFor="let item of patrimonies" [value]="item.id">
+              {{ item.serialNumber }} — {{ item.name }} ({{ item.location || item.category }})
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="label">Descrição do serviço / chamado *</label>
+          <input
+            type="text"
+            name="title"
+            class="input"
+            [(ngModel)]="form.title"
+            placeholder="Ex.: Revisão preventiva trimestral e troca de filtros"
+            required
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label class="label">Tipo</label>
+            <select name="type" class="input" [(ngModel)]="form.type">
+              <option *ngFor="let tp of types" [value]="tp">{{ tp }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="label">Prioridade</label>
+            <select name="priority" class="input" [(ngModel)]="form.priority">
+              <option *ngFor="let pr of priorities" [value]="pr">{{ pr }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="label">Status</label>
+            <select name="status" class="input" [(ngModel)]="form.status">
+              <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div>
+            <label class="label">Fornecedor / Assistência</label>
+            <input
+              type="text"
+              name="provider"
+              class="input"
+              [(ngModel)]="form.provider"
+              placeholder="Ex.: Dell ProSupport"
+            />
+          </div>
+          <div>
+            <label class="label">Custo (R$)</label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              name="cost"
+              class="input"
+              [(ngModel)]="form.cost"
+            />
+          </div>
+          <div>
+            <label class="label">Data programada *</label>
+            <input
+              type="date"
+              name="scheduledDate"
+              class="input"
+              [(ngModel)]="form.scheduledDate"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="label">Laudo / Observações técnicas</label>
+          <textarea
+            name="notes"
+            rows="3"
+            class="input"
+            [(ngModel)]="form.notes"
+            placeholder="Detalhes do diagnóstico, peças trocadas ou número do protocolo..."
+          ></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            {{ editing ? 'Salvar alterações' : 'Registrar Ordem' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
