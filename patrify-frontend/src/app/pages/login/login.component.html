@@ -1,106 +1,166 @@
+<div class="auth-shell">
+  <section class="auth-panel">
+    <div class="auth-glow auth-glow-1"></div>
+    <div class="auth-glow auth-glow-2"></div>
 
-<body>
-    <section class="container-left">
-        <img src="../../../assets/imgs/patrify logo.png" id="patrify-logo">
-        <div class="login" id="login">
-            <h2 class="font-semibold">Login</h2>
-            <form action="" id="formLogin" (submit)="LoginUser()">
-                <div class="form-group">
-                    <label for="email">CNPJ:</label>
-                    <input type="text" name="cnpj" id="cnpj" class="input-login" required maxlength="18">
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha:</label>
-                    <div class="password-container">
-                        <input type="password" name="password" id="password" class="input-login" required>
-                        <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M288 80c-65.2 0-118.8 29.6-159.9 67.7C89.6 183.5 63 226 49.4 256c13.6 30 40.2 72.5 78.6 108.3C169.2 402.4 222.8 432 288 432s118.8-29.6 159.9-67.7C486.4 328.5 513 286 526.6 256c-13.6-30-40.2-72.5-78.6-108.3C406.8 109.6 353.2 80 288 80zM95.4 112.6C142.5 68.8 207.2 32 288 32s145.5 36.8 192.6 80.6c46.8 43.5 78.1 95.4 93 131.1c3.3 7.9 3.3 16.7 0 24.6c-14.9 35.7-46.2 87.7-93 131.1C433.5 443.2 368.8 480 288 480s-145.5-36.8-192.6-80.6C48.6 356 17.3 304 2.5 268.3c-3.3-7.9-3.3-16.7 0-24.6C17.3 208 48.6 156 95.4 112.6zM288 336c44.2 0 80-35.8 80-80s-35.8-80-80-80c-.7 0-1.3 0-2 0c1.3 5.1 2 10.5 2 16c0 35.3-28.7 64-64 64c-5.5 0-10.9-.7-16-2c0 .7 0 1.3 0 2c0 44.2 35.8 80 80 80zm0-208a128 128 0 1 1 0 256 128 128 0 1 1 0-256z"/></svg>                    </div>
-                </div>
-                <a id="forgotPassword" href="/senha">Esqueci a Senha</a>
-                <button type="submit">Entrar</button>
-                <div class="other">
-                    <p>Não tem uma conta?</p>
-                    <p id="linkRegister">Registre-se aqui.</p>
-                </div>
-            </form>
-        </div>
-        <div class="register" id="register">
-            <h2 class="font-semibold">Registro</h2>
-            <form action="" id="formRegister" (submit)="registerUser()">
-                <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-                <div class="form-group" id="cnpjBox">
-                    <label for="cnpj">CNPJ:</label>
-                    <input type="text" name="cnpj" id="cnpjreg" class="input-login" required maxlength="18">
-                </div>
-                <div class="form-group">
-                    <label for="email">Email Empresarial:</label>
-                    <input type="text" name="email" id="email" class="input-login" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha:</label>
-                    <input type="password" name="password" id="passwordreg" class="input-login" required>
-                    <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M288 80c-65.2 0-118.8 29.6-159.9 67.7C89.6 183.5 63 226 49.4 256c13.6 30 40.2 72.5 78.6 108.3C169.2 402.4 222.8 432 288 432s118.8-29.6 159.9-67.7C486.4 328.5 513 286 526.6 256c-13.6-30-40.2-72.5-78.6-108.3C406.8 109.6 353.2 80 288 80zM95.4 112.6C142.5 68.8 207.2 32 288 32s145.5 36.8 192.6 80.6c46.8 43.5 78.1 95.4 93 131.1c3.3 7.9 3.3 16.7 0 24.6c-14.9 35.7-46.2 87.7-93 131.1C433.5 443.2 368.8 480 288 480s-145.5-36.8-192.6-80.6C48.6 356 17.3 304 2.5 268.3c-3.3-7.9-3.3-16.7 0-24.6C17.3 208 48.6 156 95.4 112.6zM288 336c44.2 0 80-35.8 80-80s-35.8-80-80-80c-.7 0-1.3 0-2 0c1.3 5.1 2 10.5 2 16c0 35.3-28.7 64-64 64c-5.5 0-10.9-.7-16-2c0 .7 0 1.3 0 2c0 44.2 35.8 80 80 80zm0-208a128 128 0 1 1 0 256 128 128 0 1 1 0-256z"/></svg>
-                    <div class="progress">
-                        <div id="passwordStrength" class="progress-bar" role="progressbar" aria-valuenow="0"
-                            aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="reppassword">Repita a senha:</label>
-                    <input type="password" name="reppassword" id="reppassword" class="input-login" required>
-                    
-                </div>
-                <button id="btnCadastro" (click)="registerUser()" class="btn btn-primary" disabled>Cadastrar</button>
+    <div class="auth-content">
+      <a routerLink="/patrify" class="auth-logo" aria-label="Patrify">
+        <img src="assets/imgs/Patrify-logo-gradient2.png" alt="" />
+        <span>Patrify</span>
+      </a>
 
-                <div class="other">
-                    <p>Já tem uma conta?</p>
-                    <p id="linkLogin">Faça o login aqui.</p>
-                </div>
-            </form>
-        </div>
-    </section>
-    <section class="container-right">
-        <h1 id="akievo" class="font-bold">PATRIFY</h1>
-        <div class="text">
-            <p><span id="organize"></span> seu patrimônio</p>
-        </div>
-    </section>
-    <div class="popup" id="popup">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-            class="w-6 h-6" id="popup-x">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+      <div class="auth-card">
+        <!-- Login Exclusivo -->
+        <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+          <header class="auth-header">
+            <h1>Acesse sua conta</h1>
+            <p>Informe o CNPJ da empresa e sua senha liberada pelo administrador.</p>
+          </header>
 
-        <div class="popup-content">
-            <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                stroke-width="1.5" width="24" height="24" color="#000000">
-                <defs>
-                    <style>
-                        .cls-637b74f4f95e86b59c579ef3-1 {
-                            fill: none;
-                            stroke: currentColor;
-                            stroke-miterlimit: 10;
-                        }
-                    </style>
-                </defs>
-                <rect class="cls-637b74f4f95e86b59c579ef3-1" x="1.5" y="13.91" width="21" height="8.59"></rect>
-                <circle class="cls-637b74f4f95e86b59c579ef3-1" cx="4.84" cy="18.2" r="0.48"></circle>
-                <circle class="cls-637b74f4f95e86b59c579ef3-1" cx="9.61" cy="18.2" r="0.48"></circle>
-                <circle class="cls-637b74f4f95e86b59c579ef3-1" cx="14.39" cy="18.2" r="0.48"></circle>
-                <circle class="cls-637b74f4f95e86b59c579ef3-1" cx="19.16" cy="18.2" r="0.48"></circle>
-                <rect class="cls-637b74f4f95e86b59c579ef3-1" x="9.14" y="5.32" width="5.73" height="4.77"></rect>
-                <path class="cls-637b74f4f95e86b59c579ef3-1"
-                    d="M12,1.5h0a1.91,1.91,0,0,1,1.91,1.91V5.32a0,0,0,0,1,0,0H10.09a0,0,0,0,1,0,0V3.41A1.91,1.91,0,0,1,12,1.5Z"
-                    id="alert"></path>
+          <div class="auth-field">
+            <label class="auth-label" for="loginCnpj">CNPJ</label>
+            <div class="auth-input-wrap">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
+              </svg>
+              <input
+                id="loginCnpj"
+                type="text"
+                class="auth-input"
+                formControlName="cnpj"
+                appCnpjMask
+                inputmode="numeric"
+                maxlength="18"
+                autocomplete="username"
+                placeholder="00.000.000/0000-00"
+              />
+            </div>
+            <p
+              class="auth-error"
+              *ngIf="loginControls['cnpj'].touched && loginControls['cnpj'].hasError('required')"
+            >
+              Informe o CNPJ da empresa.
+            </p>
+            <p
+              class="auth-error"
+              *ngIf="loginControls['cnpj'].touched && loginControls['cnpj'].hasError('cnpj')"
+            >
+              CNPJ inválido. Confira os números digitados.
+            </p>
+          </div>
+
+          <div class="auth-field">
+            <div class="auth-label-row">
+              <label class="auth-label" for="loginPassword">Senha</label>
+              <a routerLink="/senha" class="auth-link auth-link-sm">Esqueci minha senha</a>
+            </div>
+            <div class="auth-input-wrap">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+              <input
+                id="loginPassword"
+                [type]="showLoginPassword ? 'text' : 'password'"
+                class="auth-input auth-input-password"
+                formControlName="password"
+                autocomplete="current-password"
+                placeholder="Sua senha"
+              />
+              <button
+                type="button"
+                class="auth-eye"
+                (click)="showLoginPassword = !showLoginPassword"
+                [attr.aria-label]="showLoginPassword ? 'Ocultar senha' : 'Mostrar senha'"
+              >
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
+            <p
+              class="auth-error"
+              *ngIf="loginControls['password'].touched && loginControls['password'].invalid"
+            >
+              Informe sua senha.
+            </p>
+          </div>
+
+          <button type="submit" class="auth-submit" [disabled]="submitting">
+            <svg *ngIf="submitting" class="auth-spinner" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
             </svg>
-            <p>Esqueceu a senha?</p>
-            <p>Digite as informações exigidas e nós enviaremos um link em seu email para redefinir sua senha.</p>
-            <form action="">
-                <label for="email">CNPJ:</label>
-                <input type="text" name="cnpj-fp" id="cnpj-fp" required>
-                <label for="email">Email:</label>
-                <input type="text" name="email-fp" id="email-fp" required>
-                <button type="submit" id="popup-exit">Enviar</button>
-            </form>
-        </div>
+            {{ submitting ? 'Entrando...' : 'Entrar' }}
+          </button>
+
+          <p class="auth-note" style="margin-top: 18px; text-align: center;">
+            O cadastro de novas empresas e usuários é realizado exclusivamente pelo
+            <strong>Administrador do Sistema</strong>.
+          </p>
+        </form>
+      </div>
+
+      <p class="auth-footer">
+        © {{ currentYear }} Patrify · Gestão patrimonial inteligente
+      </p>
     </div>
-</body>
+  </section>
+
+  <aside class="auth-hero">
+    <div class="hero-content">
+      <span class="hero-eyebrow">Gestão patrimonial inteligente</span>
+      <h2>Patrify</h2>
+      <p class="hero-typing">
+        <span class="hero-gradient">{{ typingText }}</span><span class="hero-caret"></span>
+        seu patrimônio
+      </p>
+      <p class="hero-description">
+        Centralize o inventário, acompanhe indicadores em tempo real e encontre o destino correto
+        para cada ativo que sai de operação.
+      </p>
+
+      <ul class="hero-features">
+        <li>
+          <span class="hero-check">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </span>
+          Inventário completo com filtros, paginação e exportação
+        </li>
+        <li>
+          <span class="hero-check">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </span>
+          Dashboard com valor ativo, status e evolução mensal
+        </li>
+        <li>
+          <span class="hero-check">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+            </svg>
+          </span>
+          Descarte responsável com pontos de coleta próximos
+        </li>
+      </ul>
+
+      <div class="hero-stats">
+        <div>
+          <strong>100%</strong>
+          <span>web e responsivo</span>
+        </div>
+        <div>
+          <strong>JWT</strong>
+          <span>sessões seguras</span>
+        </div>
+        <div>
+          <strong>BRL</strong>
+          <span>valores em tempo real</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>

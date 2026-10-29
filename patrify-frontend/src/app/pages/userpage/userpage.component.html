@@ -1,60 +1,351 @@
-<body class="flex bg-gray-100 h-max">
-    <sidebar class="sidebar"></sidebar> <!-- SIDEBAR -->
-    <div class="flex flex-col flex-1">
-        <header-global></header-global> <!-- HEADER -->
-        <div class="container mx-auto px-4 py-8">
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                <!-- Profile Header -->
-                <div class="px-6 py-4" id="bg-user">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 mr-4">
-                            <svg class="h-10 w-10" xmlns="http://www.w3.org/2000/svg"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" height="800px" width="800px" version="1.1"
-                                viewBox="0 0 60.671 60.671" xml:space="preserve">
-                                <g>
-                                    <g>
-                                        <ellipse class="fill-current text-white group-hover:fill-purple-900"
-                                            fill="currentColor" cx="30.336" cy="12.097" rx="11.997" ry="12.097" />
-                                        <path class="fill-current text-white group-hover:fill-purple-900"
-                                            fill="currentColor"
-                                            d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9    C48.354,35.818,42.661,30.079,35.64,30.079z" />
-                                    </g>
-                                </g>
-                            </svg>
-                        </div>
-                        <!-- Profile Body -->
-                        <div *ngFor="let user of userInfo">
-                            <div class="text-white">
-                                
-                                <h2 class="text-2xl font-semibold">Nome: {{user.user_name}}</h2>
-                                <p class="text-sm">Razão Social: {{user.user_razaosocial}}</p>
-                                <p class="text-sm">CNPJ: {{user.user_cnpj}}</p>
-                                <p class="text-sm">Telefone 1: {{user.user_telefone1}}</p>
-                                <p class="text-sm">Telefone 2: {{user.user_telefone2}}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Profile Footer -->
-                <div *ngFor="let user of userInfo">
-                    <div class="px-6 py-4 bg-gray-200">
-                        <h2 class="text-lg font-semibold text-gray-800">Sobre mim</h2>
-                        <div>
-                            
-                            <p>Atividade Econômica: {{user.atividadeeconomica}} </p>
-                            <p>ENDEREÇO: {{user.user_endereco}}</p>
-                            <!-- Adicione os outros campos que deseja exibir aqui -->
-                        </div>
-                    </div>
-                </div>
-                <!-- <div class="px-6 py-4">
-                    <h2 class="text-lg font-semibold text-gray-800">Quantidade de Patrimonios ativos por</h2>
-                    <p class="mt-2 text-gray-600"></p>
-                    <img src="../../../assets/imgs/grafico de teste.png" alt="" width="800px">
-                </div> -->
+<div class="space-y-6">
+  <!-- Profile hero -->
+  <section class="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-soft sm:px-8">
+    <div class="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-brand-600/30 blur-3xl"></div>
+    <div class="absolute -bottom-24 right-24 h-56 w-56 rounded-full bg-accent-500/20 blur-3xl"></div>
 
-
-            </div>
+    <div class="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-center gap-4">
+        <div
+          class="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-accent-500 text-xl font-bold text-white shadow-lg"
+        >
+          {{ initials }}
         </div>
+        <div class="min-w-0">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-300">Conta corporativa</p>
+          <h2 class="mt-1 truncate text-2xl font-bold tracking-tight">{{ user?.name || 'Carregando...' }}</h2>
+          <p class="truncate text-sm text-slate-400">
+            {{ user?.legalName || 'Razão social não informada' }}
+          </p>
+          <p class="mt-1 text-xs text-slate-500">CNPJ {{ cnpj }}</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <span class="badge bg-white/10 text-emerald-300 ring-1 ring-inset ring-emerald-400/20">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+          Conta ativa
+        </span>
+        <span class="badge bg-white/10 text-slate-300 ring-1 ring-inset ring-white/10">
+          Desde {{ memberSince }}
+        </span>
+      </div>
     </div>
-</body>
+  </section>
+
+  <!-- Tabs -->
+  <div class="flex flex-wrap gap-2">
+    <button
+      type="button"
+      class="btn"
+      [ngClass]="activeTab === 'profile' ? 'btn-primary' : 'btn-secondary'"
+      (click)="setTab('profile')"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+      </svg>
+      Dados cadastrais
+    </button>
+    <button
+      type="button"
+      class="btn"
+      [ngClass]="activeTab === 'security' ? 'btn-primary' : 'btn-secondary'"
+      (click)="setTab('security')"
+    >
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+      </svg>
+      Segurança
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="grid gap-4 xl:grid-cols-3">
+    <div class="card card-body xl:col-span-2">
+      <div class="skeleton h-4 w-40"></div>
+      <div class="mt-5 grid gap-4 sm:grid-cols-2">
+        <div *ngFor="let item of [1, 2, 3, 4]" class="skeleton h-10 w-full"></div>
+      </div>
+    </div>
+    <div class="card card-body">
+      <div class="skeleton h-4 w-32"></div>
+      <div class="mt-4 space-y-3">
+        <div *ngFor="let item of [1, 2, 3, 4]" class="skeleton h-3 w-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <!-- Profile tab -->
+    <div *ngIf="activeTab === 'profile'" class="grid gap-4 xl:grid-cols-3">
+      <form class="card card-body xl:col-span-2" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">Informações de contato</h3>
+            <p class="text-xs text-slate-500">Mantenha os dados da conta sempre atualizados.</p>
+          </div>
+          <span *ngIf="profileForm.dirty" class="badge badge-warning">Alterações não salvas</span>
+        </div>
+
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label class="label" for="name">Nome / nome fantasia</label>
+            <input id="name" type="text" class="input" formControlName="name" maxlength="160" />
+            <p
+              *ngIf="profileControls['name'].touched && profileControls['name'].invalid"
+              class="field-error"
+            >
+              Informe um nome com pelo menos 2 caracteres.
+            </p>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="label" for="email">E-mail de acesso</label>
+            <input id="email" type="email" class="input" formControlName="email" maxlength="160" />
+            <p
+              *ngIf="profileControls['email'].touched && profileControls['email'].invalid"
+              class="field-error"
+            >
+              Informe um e-mail válido.
+            </p>
+          </div>
+
+          <div>
+            <label class="label" for="phone1">Telefone principal</label>
+            <input id="phone1" type="tel" class="input" formControlName="phone1" maxlength="20" placeholder="(11) 99999-9999" />
+          </div>
+
+          <div>
+            <label class="label" for="phone2">Telefone alternativo</label>
+            <input id="phone2" type="tel" class="input" formControlName="phone2" maxlength="20" placeholder="(11) 3333-3333" />
+          </div>
+
+          <div>
+            <label class="label" for="branchType">Tipo de filial</label>
+            <input id="branchType" type="text" class="input" formControlName="branchType" maxlength="50" placeholder="Matriz, filial..." />
+          </div>
+
+          <div>
+            <label class="label" for="companySize">Porte da empresa</label>
+            <select id="companySize" class="input" formControlName="companySize">
+              <option value="">Não informado</option>
+              <option value="MEI">MEI</option>
+              <option value="Microempresa">Microempresa</option>
+              <option value="Pequeno porte">Pequeno porte</option>
+              <option value="Médio porte">Médio porte</option>
+              <option value="Grande porte">Grande porte</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+          <p class="text-xs text-slate-500">
+            Alterações de e-mail passam a valer imediatamente para o próximo login.
+          </p>
+          <div class="flex gap-2">
+            <button type="button" class="btn btn-secondary" (click)="loadProfile()" [disabled]="savingProfile">
+              Descartar
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="savingProfile">
+              <svg *ngIf="savingProfile" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              {{ savingProfile ? 'Salvando...' : 'Salvar alterações' }}
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div class="space-y-4">
+        <div class="card card-body">
+          <h3 class="text-base font-semibold text-slate-900">Dados da empresa</h3>
+          <p class="text-xs text-slate-500">Informações obtidas na Receita Federal (somente leitura).</p>
+
+          <dl class="mt-4 space-y-3 text-sm">
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">CNPJ</dt>
+              <dd class="mt-0.5 font-medium text-slate-800">{{ cnpj }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Razão social</dt>
+              <dd class="mt-0.5 text-slate-700">{{ user?.legalName || '—' }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Endereço</dt>
+              <dd class="mt-0.5 text-slate-700">{{ user?.address || '—' }}</dd>
+            </div>
+            <div>
+              <dt class="text-xs font-semibold uppercase tracking-wide text-slate-400">Atividade econômica</dt>
+              <dd class="mt-0.5 text-slate-700">{{ user?.economicActivity || '—' }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="card card-body">
+          <h3 class="text-base font-semibold text-slate-900">Resumo da conta</h3>
+          <dl class="mt-4 space-y-3 text-sm">
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-500">Cadastro</dt>
+              <dd class="font-medium text-slate-800">{{ memberSince }}</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-500">Último acesso</dt>
+              <dd class="font-medium text-slate-800">{{ lastLogin }}</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-500">Tipo de filial</dt>
+              <dd class="font-medium text-slate-800">{{ user?.branchType || '—' }}</dd>
+            </div>
+            <div class="flex items-center justify-between">
+              <dt class="text-slate-500">Porte</dt>
+              <dd class="font-medium text-slate-800">{{ user?.companySize || '—' }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security tab -->
+    <div *ngIf="activeTab === 'security'" class="grid gap-4 xl:grid-cols-3">
+      <form class="card card-body xl:col-span-2" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div>
+          <h3 class="text-base font-semibold text-slate-900">Alterar senha</h3>
+          <p class="text-xs text-slate-500">
+            Use pelo menos 8 caracteres, com letras e números. Evite reutilizar senhas.
+          </p>
+        </div>
+
+        <div class="mt-5 grid gap-4 sm:grid-cols-2">
+          <div class="sm:col-span-2">
+            <label class="label" for="currentPassword">Senha atual</label>
+            <div class="relative">
+              <input
+                id="currentPassword"
+                [type]="showCurrentPassword ? 'text' : 'password'"
+                class="input pr-11"
+                formControlName="currentPassword"
+                autocomplete="current-password"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600"
+                (click)="showCurrentPassword = !showCurrentPassword"
+                [attr.aria-label]="showCurrentPassword ? 'Ocultar senha atual' : 'Mostrar senha atual'"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
+            <p
+              *ngIf="passwordControls['currentPassword'].touched && passwordControls['currentPassword'].invalid"
+              class="field-error"
+            >
+              Informe sua senha atual.
+            </p>
+          </div>
+
+          <div>
+            <label class="label" for="newPassword">Nova senha</label>
+            <div class="relative">
+              <input
+                id="newPassword"
+                [type]="showNewPassword ? 'text' : 'password'"
+                class="input pr-11"
+                formControlName="newPassword"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600"
+                (click)="showNewPassword = !showNewPassword"
+                [attr.aria-label]="showNewPassword ? 'Ocultar nova senha' : 'Mostrar nova senha'"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
+            <p *ngIf="passwordControls['newPassword'].touched && passwordControls['newPassword'].invalid" class="field-error">
+              A senha deve ter 8+ caracteres, com letras e números.
+            </p>
+          </div>
+
+          <div>
+            <label class="label" for="confirmPassword">Confirmar nova senha</label>
+            <div class="relative">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                class="input pr-11"
+                formControlName="confirmPassword"
+                autocomplete="new-password"
+              />
+              <button
+                type="button"
+                class="absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 hover:text-slate-600"
+                (click)="showConfirmPassword = !showConfirmPassword"
+                [attr.aria-label]="showConfirmPassword ? 'Ocultar confirmação' : 'Mostrar confirmação'"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            </div>
+            <p *ngIf="passwordMismatch" class="field-error">As senhas não coincidem.</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex justify-end border-t border-slate-100 pt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="savingPassword">
+            <svg *ngIf="savingPassword" class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            {{ savingPassword ? 'Atualizando...' : 'Atualizar senha' }}
+          </button>
+        </div>
+      </form>
+
+      <div class="space-y-4">
+        <div class="card card-body">
+          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+            </svg>
+          </div>
+          <h3 class="mt-3 text-base font-semibold text-slate-900">Sua conta está protegida</h3>
+          <p class="mt-1 text-sm text-slate-500">
+            As senhas são armazenadas com hash bcrypt e as sessões usam tokens JWT com expiração.
+          </p>
+          <ul class="mt-4 space-y-2 text-sm text-slate-600">
+            <li class="flex items-start gap-2">
+              <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500"></span>
+              Limite de tentativas de login ativo
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500"></span>
+              Recuperação de senha por token temporário
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500"></span>
+              Sessão encerrada automaticamente ao expirar
+            </li>
+          </ul>
+        </div>
+
+        <div class="card card-body">
+          <h3 class="text-base font-semibold text-slate-900">Último acesso</h3>
+          <p class="mt-1 text-sm text-slate-600">{{ lastLogin }}</p>
+          <p class="mt-2 text-xs text-slate-500">
+            Se você não reconhece este acesso, altere sua senha imediatamente.
+          </p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

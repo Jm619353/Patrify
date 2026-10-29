@@ -1,0 +1,363 @@
+<div class="min-h-screen bg-slate-950 text-slate-100">
+  <!-- Top bar -->
+  <header class="border-b border-white/10 bg-slate-950/90 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+      <a routerLink="/home" class="flex items-center gap-3">
+        <img
+          src="assets/imgs/Patrify-logo-gradient2.png"
+          alt="Patrify"
+          class="h-9 w-9 rounded-xl bg-white/10 object-contain p-1"
+        />
+        <div>
+          <p class="text-base font-bold tracking-tight text-white">Patrify</p>
+          <p class="text-[10px] uppercase tracking-[0.2em] text-brand-300">
+            Consulta Pública de Patrimônio · QR Code
+          </p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-2">
+        <a
+          routerLink="/inventario"
+          class="rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-white/10"
+        >
+          Ir para o Inventário
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <!-- Barra de consulta por código de série -->
+    <section class="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
+      <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full bg-brand-500/20 px-3 py-1 text-xs font-semibold text-brand-200"
+          >
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
+              />
+            </svg>
+            Verificação por QR Code ou Código de Série
+          </span>
+          <h1 class="mt-2 text-xl font-bold text-white sm:text-2xl">
+            Ficha digital de autenticidade patrimonial
+          </h1>
+          <p class="mt-1 text-xs text-slate-400 sm:text-sm">
+            Escaneie a etiqueta QR do equipamento ou digite o código de série para consultar todas as
+            informações em tempo real.
+          </p>
+        </div>
+
+        <form class="flex w-full gap-2 md:w-auto" (ngSubmit)="onSearchSubmit()">
+          <input
+            type="text"
+            name="serialInput"
+            [(ngModel)]="serialInput"
+            placeholder="Ex.: TECHDEMO0001"
+            class="w-full rounded-xl border border-white/15 bg-slate-900 px-4 py-2.5 font-mono text-sm uppercase text-white placeholder:text-slate-500 focus:border-brand-400 focus:outline-none md:w-56"
+          />
+          <button type="submit" class="btn btn-primary whitespace-nowrap">Consultar</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="mt-6 grid gap-6 lg:grid-cols-3">
+      <div class="rounded-3xl border border-white/10 bg-white/5 p-6 lg:col-span-2">
+        <div class="h-6 w-48 animate-pulse rounded bg-white/10"></div>
+        <div class="mt-4 h-10 w-3/4 animate-pulse rounded bg-white/10"></div>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+          <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" class="h-20 animate-pulse rounded-2xl bg-white/5"></div>
+        </div>
+      </div>
+      <div class="h-80 animate-pulse rounded-3xl border border-white/10 bg-white/5 p-6"></div>
+    </div>
+
+    <!-- Não encontrado -->
+    <div
+      *ngIf="!loading && notFound"
+      class="mt-6 rounded-3xl border border-rose-500/30 bg-rose-950/20 p-8 text-center"
+    >
+      <div
+        class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-300"
+      >
+        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+          />
+        </svg>
+      </div>
+      <h2 class="mt-4 text-lg font-bold text-white">Patrimônio não encontrado</h2>
+      <p class="mt-1 text-sm text-slate-400">
+        Não localizamos nenhum bem ativo com o código de série
+        <span class="font-mono font-semibold text-white">{{ serialInput }}</span>.
+      </p>
+    </div>
+
+    <!-- Resultado completo do patrimônio -->
+    <div *ngIf="!loading && verification as data" class="mt-6 grid gap-6 lg:grid-cols-3">
+      <!-- Coluna Principal: Dados do Patrimônio -->
+      <div class="space-y-6 lg:col-span-2">
+        <!-- Cabeçalho do Bem -->
+        <div class="rounded-3xl bg-white p-6 text-slate-900 shadow-xl sm:p-8">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-5">
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-600/20"
+              >
+                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                Patrimônio Autêntico Verificado
+              </span>
+              <span class="badge" [ngClass]="statusClass(data.patrimony.status)">
+                {{ data.patrimony.status }}
+              </span>
+              <span class="badge" [ngClass]="conditionClass(data.patrimony.condition)">
+                {{ data.patrimony.condition }}
+              </span>
+            </div>
+
+            <span
+              class="rounded-xl bg-slate-900 px-3.5 py-1.5 font-mono text-xs font-bold tracking-wider text-white"
+            >
+              {{ data.patrimony.serialNumber }}
+            </span>
+          </div>
+
+          <div class="mt-6 flex flex-col gap-6 sm:flex-row sm:items-start">
+            <img
+              *ngIf="data.patrimony.imageUrl"
+              [src]="data.patrimony.imageUrl"
+              [alt]="data.patrimony.name"
+              class="h-32 w-32 flex-shrink-0 rounded-2xl border border-slate-200 object-cover shadow-sm"
+            />
+            <div
+              *ngIf="!data.patrimony.imageUrl"
+              class="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-3xl font-bold text-brand-700"
+            >
+              {{ data.patrimony.category.charAt(0) }}
+            </div>
+
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-semibold uppercase tracking-wider text-brand-700">
+                {{ data.patrimony.category }}
+              </p>
+              <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                {{ data.patrimony.name }}
+              </h2>
+              <p *ngIf="data.patrimony.notes" class="mt-2 text-sm leading-relaxed text-slate-600">
+                {{ data.patrimony.notes }}
+              </p>
+
+              <div class="mt-4 flex flex-wrap gap-2 text-xs text-slate-500">
+                <span class="rounded-lg bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+                  Quantidade: <strong>{{ data.patrimony.quantity }}</strong>
+                </span>
+                <span
+                  *ngIf="data.patrimony.invoiceNumber"
+                  class="rounded-lg bg-slate-100 px-2.5 py-1 font-medium text-slate-700"
+                >
+                  Nota Fiscal: <strong>{{ data.patrimony.invoiceNumber }}</strong>
+                </span>
+                <span
+                  *ngIf="data.patrimony.warrantyUntil"
+                  class="rounded-lg px-2.5 py-1 font-medium"
+                  [ngClass]="
+                    isWarrantyActive(data.patrimony.warrantyUntil)
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'bg-amber-50 text-amber-700'
+                  "
+                >
+                  Garantia até {{ data.patrimony.warrantyUntil | date: 'dd/MM/yyyy' : 'UTC' }} ({{
+                    isWarrantyActive(data.patrimony.warrantyUntil) ? 'Vigente' : 'Expirada'
+                  }})
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grade de Informações Técnicas e Operacionais -->
+          <div class="mt-6 grid gap-4 border-t border-slate-100 pt-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Localização Física
+              </p>
+              <p class="mt-1 text-sm font-bold text-slate-900">
+                {{ data.patrimony.location || 'Não informada' }}
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Responsável / Setor
+              </p>
+              <p class="mt-1 text-sm font-bold text-slate-900">
+                {{ data.patrimony.responsible || 'Uso corporativo geral' }}
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Data de Aquisição
+              </p>
+              <p class="mt-1 text-sm font-bold text-slate-900">
+                {{ data.patrimony.purchaseDate | date: 'dd/MM/yyyy' : 'UTC' }}
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Valor de Aquisição (Unit.)
+              </p>
+              <p class="mt-1 text-sm font-bold text-slate-900">
+                {{ data.patrimony.value | currency: 'BRL' }}
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Valor Contábil Estimado
+              </p>
+              <p class="mt-1 text-sm font-bold text-emerald-700">
+                {{
+                  (data.patrimony.depreciation?.totalDepreciatedValue ?? data.patrimony.value)
+                    | currency: 'BRL'
+                }}
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-slate-50 p-4">
+              <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                Depreciação Acumulada
+              </p>
+              <p class="mt-1 text-sm font-bold text-slate-900">
+                {{ data.patrimony.depreciation?.depreciationPercent ?? 0 }}%
+                <span class="text-xs font-normal text-slate-500">
+                  ({{ data.patrimony.depreciation?.annualRatePercent ?? 10 }}% a.a.)
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dados da Empresa Proprietária -->
+        <div *ngIf="data.company as company" class="rounded-3xl bg-white p-6 text-slate-900 shadow-xl sm:p-8">
+          <h3 class="text-base font-bold text-slate-900">Empresa Proprietária do Bem</h3>
+          <p class="text-xs text-slate-500">
+            Dados institucionais vinculados ao CNPJ proprietário deste patrimônio
+          </p>
+
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <div>
+              <p class="text-xs font-semibold uppercase text-slate-400">Nome Fantasia</p>
+              <p class="mt-0.5 text-sm font-semibold text-slate-900">{{ company.name }}</p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase text-slate-400">Razão Social</p>
+              <p class="mt-0.5 text-sm font-semibold text-slate-900">
+                {{ company.legalName || company.name }}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase text-slate-400">CNPJ</p>
+              <p class="mt-0.5 font-mono text-sm font-semibold text-slate-900">
+                {{ formatCompanyCnpj(company.cnpj) }}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase text-slate-400">Contato</p>
+              <p class="mt-0.5 text-sm text-slate-700">
+                {{ company.email || '—' }}{{ company.phone1 ? ' · ' + company.phone1 : '' }}
+              </p>
+            </div>
+            <div class="sm:col-span-2" *ngIf="company.address">
+              <p class="text-xs font-semibold uppercase text-slate-400">Endereço</p>
+              <p class="mt-0.5 text-sm text-slate-700">{{ company.address }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Linha do Tempo de Movimentações / Auditoria -->
+        <div
+          *ngIf="data.patrimony.movements && data.patrimony.movements.length > 0"
+          class="rounded-3xl bg-white p-6 text-slate-900 shadow-xl sm:p-8"
+        >
+          <h3 class="text-base font-bold text-slate-900">Histórico de Movimentações e Auditoria</h3>
+          <p class="text-xs text-slate-500">
+            Rastreabilidade completa de alocações, manutenções e atualizações do patrimônio
+          </p>
+
+          <ol class="mt-5 space-y-4 border-l-2 border-brand-200 pl-4">
+            <li *ngFor="let mov of data.patrimony.movements" class="relative">
+              <span
+                class="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-brand-600 ring-4 ring-white"
+              ></span>
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span class="rounded-md bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700">
+                  {{ mov.type }}
+                </span>
+                <span class="text-xs text-slate-400">
+                  {{ mov.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+              </div>
+              <p class="mt-1 text-sm font-medium text-slate-800">{{ mov.description }}</p>
+              <p class="mt-0.5 text-xs text-slate-500">
+                <span *ngIf="mov.location">Local: {{ mov.location }}</span>
+                <span *ngIf="mov.responsible"> · Resp.: {{ mov.responsible }}</span>
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Coluna Lateral: Etiqueta QR Code e Ações -->
+      <div class="space-y-6">
+        <div class="rounded-3xl bg-white p-6 text-slate-900 shadow-xl">
+          <div class="text-center">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-700">
+              Etiqueta Digital QR
+            </p>
+            <h3 class="mt-1 text-lg font-bold text-slate-900">
+              {{ data.patrimony.serialNumber }}
+            </h3>
+            <p class="mt-1 text-xs text-slate-500">
+              Aponte a câmera do celular para acessar esta ficha a qualquer momento
+            </p>
+          </div>
+
+          <div class="my-5 flex justify-center">
+            <div class="rounded-2xl border-2 border-slate-900 bg-white p-3 shadow-sm">
+              <img
+                [src]="data.qrCodeDataUrl"
+                [alt]="'QR Code ' + data.patrimony.serialNumber"
+                class="h-48 w-48 object-contain"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-2.5">
+            <button type="button" class="btn btn-primary w-full" (click)="printTag()">
+              Imprimir Etiqueta Patrimonial
+            </button>
+            <button type="button" class="btn btn-secondary w-full" (click)="downloadQrCode()">
+              Baixar Imagem QR Code (PNG)
+            </button>
+            <button type="button" class="btn btn-ghost w-full" (click)="copyLink()">
+              Copiar Link da Ficha
+            </button>
+          </div>
+
+          <div class="mt-5 border-t border-slate-100 pt-4 text-center text-[11px] text-slate-400">
+            Verificado em {{ data.verifiedAt | date: 'dd/MM/yyyy HH:mm:ss' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

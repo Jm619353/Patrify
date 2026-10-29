@@ -1,134 +1,1004 @@
-<body class="flex bg-gray-100 h-max">
-  <sidebar class="sidebar"></sidebar> <!-- SIDEBAR -->
-  <div class="flex flex-col flex-1">
-    <header-global></header-global> <!-- HEADER -->
-    <filtro (dataReady)="onDataReady($event.filters, $event.searchText)"></filtro> <!-- FILTRO DO INVENTÁRIO -->
-    <div class="overflow-x-auto mt-4">
-      <table class="table-auto w-[98%] mx-auto divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Imagem</th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider"
-              id="codigoSerie">Código de série</th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Nome</th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Categoria</th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">Status</th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider" id="local">
-              Localização</th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider" id="valor">
-              Preço</th>
+<div class="space-y-5">
+  <!-- Cabeçalho -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight text-slate-900">Inventário de patrimônios</h2>
+      <p class="mt-1 text-sm text-slate-500">
+        {{ meta.total }} {{ meta.total === 1 ? 'bem cadastrado' : 'bens cadastrados' }}
+        <span *ngIf="meta.total > 0">· exibindo {{ rangeStart }}–{{ rangeEnd }}</span>
+      </p>
+    </div>
 
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider" id="data">Data
-            </th>
-            <th scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider"
-              id="conservacao">Conservação</th>
-            <th colspan="2" scope="col" class="px-6 py-3 text-left font-bold text-gray-500 uppercase tracking-wider">
-              Ações</th>
+    <div class="flex flex-wrap gap-2">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="printPageTags()"
+        [disabled]="printingTags || items.length === 0"
+        title="Imprimir etiquetas QR dos patrimônios desta página"
+      >
+        <span
+          *ngIf="printingTags"
+          class="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600"
+        ></span>
+        <svg
+          *ngIf="!printingTags"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
+          />
+        </svg>
+        Imprimir Etiquetas QR
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="exportCsv()"
+        [disabled]="exporting || meta.total === 0"
+      >
+        <span
+          *ngIf="exporting"
+          class="h-4 w-4 animate-spin rounded-full border-2 border-slate-300 border-t-slate-600"
+        ></span>
+        <svg
+          *ngIf="!exporting"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+          />
+        </svg>
+        Exportar CSV
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="openCreate()">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        Novo patrimônio
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card card-body">
+    <div class="grid gap-3 lg:grid-cols-12">
+      <div class="lg:col-span-5">
+        <label class="label" for="search">Pesquisar</label>
+        <div class="relative">
+          <svg
+            class="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+          <input
+            id="search"
+            type="search"
+            class="input pl-9"
+            placeholder="Nome, código de série, responsável, NF ou localização..."
+            [ngModel]="filters.search"
+            (ngModelChange)="onSearchInput($event)"
+          />
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <label class="label" for="category">Categoria</label>
+        <select
+          id="category"
+          class="input"
+          [(ngModel)]="filters.category"
+          (change)="applyFilters()"
+        >
+          <option value="">Todas</option>
+          <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+        </select>
+      </div>
+
+      <div class="lg:col-span-2">
+        <label class="label" for="status">Status</label>
+        <select id="status" class="input" [(ngModel)]="filters.status" (change)="applyFilters()">
+          <option value="">Todos</option>
+          <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <div class="lg:col-span-2">
+        <label class="label" for="condition">Conservação</label>
+        <select
+          id="condition"
+          class="input"
+          [(ngModel)]="filters.condition"
+          (change)="applyFilters()"
+        >
+          <option value="">Todas</option>
+          <option *ngFor="let condition of conditions" [value]="condition">{{ condition }}</option>
+        </select>
+      </div>
+
+      <div class="flex items-end lg:col-span-1">
+        <button
+          type="button"
+          class="btn btn-ghost w-full"
+          (click)="clearFilters()"
+          [disabled]="!hasFilters"
+          title="Limpar filtros"
+        >
+          Limpar
+        </button>
+      </div>
+    </div>
+
+    <div class="mt-3 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-3">
+      <label class="text-xs font-medium text-slate-500" for="sort">Ordenar por</label>
+      <select
+        id="sort"
+        class="input w-auto py-1.5 text-xs"
+        [(ngModel)]="filters.sort"
+        (change)="applyFilters()"
+      >
+        <option value="createdAt">Mais recentes</option>
+        <option value="name">Nome (A–Z)</option>
+        <option value="value">Maior valor</option>
+        <option value="purchaseDate">Data de aquisição</option>
+        <option value="category">Categoria</option>
+      </select>
+      <select
+        class="input w-auto py-1.5 text-xs"
+        [(ngModel)]="filters.order"
+        (change)="applyFilters()"
+      >
+        <option value="desc">Decrescente</option>
+        <option value="asc">Crescente</option>
+      </select>
+
+      <span class="ml-auto text-xs text-slate-400">Itens por página</span>
+      <select
+        class="input w-auto py-1.5 text-xs"
+        [ngModel]="pageSize"
+        (ngModelChange)="changePageSize($event)"
+      >
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="25">25</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="table-shell">
+    <div class="overflow-x-auto">
+      <table class="table-base">
+        <thead>
+          <tr>
+            <th>Patrimônio</th>
+            <th>Categoria</th>
+            <th>Status</th>
+            <th>Conservação</th>
+            <th>Local / Resp.</th>
+            <th class="text-right">Valor / Contábil</th>
+            <th>Aquisição</th>
+            <th class="text-right">Ações</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200 transition-colors ">
-          <!-- Row 1 -->
-          <tr *ngFor="let patrimonio of patrimonios" class="hover:bg-gray-300">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-20 imagem">
-                  <img [src]="patrimonio.imageSrc" alt="" class="patr_img">
+
+        <tbody *ngIf="loading">
+          <tr *ngFor="let row of [1, 2, 3, 4, 5]">
+            <td colspan="8">
+              <div class="flex items-center gap-3">
+                <div class="skeleton h-10 w-10"></div>
+                <div class="flex-1">
+                  <div class="skeleton h-3 w-48"></div>
+                  <div class="skeleton mt-2 h-3 w-28"></div>
                 </div>
               </div>
             </td>
+          </tr>
+        </tbody>
 
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="text-sm text-gray-900">{{ patrimonio.patr_codigoserie }}</span>
-            </td>
-
-            <td class="px-6 py-4 whitespace-nowrap relative">
-              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">{{ patrimonio.patr_name }}</span><br>
-
-              <input *ngIf="patrimonio.editMode" type="text" [(ngModel)]="patrimonio.patr_name"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
-            </td>
-
-            <td class="px-6 py-4 whitespace-nowrap relative">
-              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">{{ patrimonio.patr_tipo }}</span>
-              <select *ngIf="patrimonio.editMode" [(ngModel)]="patrimonio.patr_tipo"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full z-10">
-                <option value="Tecnologia">Tecnologia</option>
-                <option value="Mobiliário">Mobiliário</option>
-                <option value="Produção">Produção</option>
-                <option value="Transporte">Transporte</option>
-                <option value="Logística">Logística</option>
-                <option value="Segurança">Segurança</option>
-                <option value="Labotorial">Labotorial</option>
-              </select>
-
-            <td class="px-6 py-4 whitespace-nowrap relative">
-              <span *ngIf="!patrimonio.editMode" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full "
-                [ngClass]="{
-                  'bg-green-100 text-green-800': patrimonio.patr_ativoinativo === 'Ativo',
-                  'bg-red-100 text-red-800': patrimonio.patr_ativoinativo === 'Não ativo'
-              }">{{patrimonio.patr_ativoinativo}}</span>
-              <select *ngIf="patrimonio.editMode" [(ngModel)]="patrimonio.patr_ativoinativo"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full z-10">
-                <option value="Ativo">Ativo</option>
-                <option value="Não ativo">Não ativo</option>
-              </select>
-            </td>
-
-            <td class="px-6 py-4 whitespace-nowrap relative" id="local">
-              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">{{patrimonio.patr_local}}</span>
-              <input *ngIf="patrimonio.editMode" type="text" [(ngModel)]="patrimonio.patr_local"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
-            </td>
-
-            <td class="relative">
-              <span *ngIf="!patrimonio.editMode" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="valor">{{
-                patrimonio.patr_valor }}</span>
-              <input *ngIf="patrimonio.editMode" type="text" [(ngModel)]="patrimonio.patr_valor"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
-            </td>
-
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 relative" id="data">
-              <span *ngIf="!patrimonio.editMode" class="text-sm text-gray-900">
-                {{ patrimonio.date | date:'dd/MM/yyyy' }}
-              </span>
-              <input *ngIf="patrimonio.editMode" type="date" [(ngModel)]="patrimonio.date"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full" />
-            </td>
-
-
-            <td class="px-6 py-4 whitespace-nowrap relative" id="conservacao">
-              <!-- Elemento de exibição normal -->
-              <span *ngIf="!patrimonio.editMode"
-                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                {{patrimonio.patr_depreciacao}}
-              </span>
-
-              <!-- Elemento de edição -->
-              <select *ngIf="patrimonio.editMode" [(ngModel)]="patrimonio.patr_depreciacao"
-                class="absolute top-0 left-0 px-6 py-4 text-sm text-gray-500 bg-transparent border-none w-full h-full z-10">
-                <option value="Novo">Novo</option>
-                <option value="Excelente">Excelente</option>
-                <option value="Regular">Regular</option>
-                <option value="Com defeitos">Com defeitos</option>
-                <option value="Obsoleto">Obsoleto</option>
-                <option value="Descartado">Descartado</option>
-              </select>
-            </td>
-            <td class="flex justify-center items-center mt-9">
-              <button id="btnActions"
-                class="rounded-full w-8 h-8 bg-transparent border-2 border-gray-400 items-center flex justify-center text-center">
-                <p class="text-gray-400 text-center font-bold text-2xl mb-3">...</p>
-              </button>
-              <div class="flex flex-col bg-gray-200 w-24 h-24 absolute justify-center items-center text-white">
-                <button class="text-blue-800 font-bold" *ngIf="!patrimonio.editMode"
-                  (click)="toggleEditMode(patrimonio)">Editar</button>
-                <button class="salvar" *ngIf="patrimonio.editMode" (click)="saveChanges(patrimonio)">Salvar</button>
-                <button class="text-red-600 font-bold" *ngIf="!patrimonio.editMode"
-                  (click)="deletarPatrimonio(patrimonio)">Deletar</button>
+        <tbody *ngIf="!loading && items.length > 0">
+          <tr *ngFor="let item of items; trackBy: trackById">
+            <td>
+              <div class="flex items-center gap-3">
+                <img
+                  *ngIf="item.imageUrl"
+                  [src]="item.imageUrl"
+                  [alt]="item.name"
+                  class="h-10 w-10 rounded-xl object-cover ring-1 ring-slate-200"
+                />
+                <div
+                  *ngIf="!item.imageUrl"
+                  class="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500"
+                >
+                  {{ item.category.charAt(0) }}
+                </div>
+                <div class="min-w-0">
+                  <button
+                    type="button"
+                    class="max-w-[18rem] truncate text-left font-medium text-slate-900 hover:text-brand-700"
+                    (click)="openDetails(item, 'info')"
+                  >
+                    {{ item.name }}
+                  </button>
+                  <p class="text-xs text-slate-500">
+                    <span class="font-mono font-semibold text-slate-700">{{
+                      item.serialNumber
+                    }}</span>
+                    · Qtd. {{ item.quantity }}
+                  </p>
+                </div>
               </div>
             </td>
+            <td>
+              <span class="badge badge-neutral">{{ item.category }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="statusClass(item.status)">{{ item.status }}</span>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="conditionClass(item.condition)">{{
+                item.condition
+              }}</span>
+            </td>
+            <td>
+              <div class="min-w-0">
+                <p class="truncate text-sm text-slate-700">{{ item.location || '—' }}</p>
+                <p *ngIf="item.responsible" class="truncate text-xs text-slate-400">
+                  {{ item.responsible }}
+                </p>
+              </div>
+            </td>
+            <td class="text-right">
+              <p class="font-semibold text-slate-900">{{ item.value | currency: 'BRL' }}</p>
+              <p
+                *ngIf="item.depreciation"
+                class="text-[11px] text-emerald-700"
+                title="Valor contábil estimado com depreciação"
+              >
+                Contábil: {{ item.depreciation.totalDepreciatedValue | currency: 'BRL' }}
+              </p>
+            </td>
+            <td class="text-slate-600">{{ item.purchaseDate | date: 'dd/MM/yyyy' : 'UTC' }}</td>
+            <td>
+              <div class="flex justify-end gap-1">
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1 rounded-lg bg-brand-50 px-2.5 py-1.5 text-xs font-semibold text-brand-700 transition hover:bg-brand-100"
+                  (click)="openDetails(item, 'qrcode')"
+                  title="Gerar QR Code, etiqueta e ver ficha completa"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
+                    />
+                  </svg>
+                  QR Code
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+                  (click)="duplicateItem(item)"
+                  title="Duplicar patrimônio"
+                  aria-label="Duplicar patrimônio"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg p-2 text-slate-500 transition hover:bg-brand-50 hover:text-brand-700"
+                  (click)="openEdit(item)"
+                  title="Editar"
+                  aria-label="Editar patrimônio"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="rounded-lg p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-600"
+                  (click)="requestDelete(item)"
+                  title="Excluir"
+                  aria-label="Excluir patrimônio"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
+
+    <div *ngIf="!loading && items.length === 0" class="empty-state">
+      <div
+        class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400"
+      >
+        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"
+          />
+        </svg>
+      </div>
+      <h3 class="mt-4 text-base font-semibold text-slate-900">
+        {{ hasFilters ? 'Nenhum resultado encontrado' : 'Seu inventário está vazio' }}
+      </h3>
+      <p class="mt-1 max-w-sm text-sm text-slate-500">
+        {{
+          hasFilters
+            ? 'Ajuste os filtros ou limpe a busca para ver mais patrimônios.'
+            : 'Cadastre o primeiro patrimônio para começar a acompanhar seus ativos.'
+        }}
+      </p>
+      <button
+        *ngIf="hasFilters"
+        type="button"
+        class="btn btn-secondary mt-4"
+        (click)="clearFilters()"
+      >
+        Limpar filtros
+      </button>
+      <button *ngIf="!hasFilters" type="button" class="btn btn-primary mt-4" (click)="openCreate()">
+        Cadastrar patrimônio
+      </button>
+    </div>
+
+    <!-- Paginação -->
+    <div
+      *ngIf="!loading && meta.total > 0"
+      class="flex flex-col items-center justify-between gap-3 border-t border-slate-100 px-5 py-3.5 sm:flex-row"
+    >
+      <p class="text-xs text-slate-500">
+        Página {{ meta.page }} de {{ meta.totalPages }} · {{ meta.total }} registros
+      </p>
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          [disabled]="!meta.hasPreviousPage"
+          (click)="goToPage(meta.page - 1)"
+        >
+          Anterior
+        </button>
+        <button
+          *ngFor="let page of pageNumbers"
+          type="button"
+          class="btn btn-sm"
+          [ngClass]="page === meta.page ? 'btn-primary' : 'btn-ghost'"
+          (click)="goToPage(page)"
+        >
+          {{ page }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          [disabled]="!meta.hasNextPage"
+          (click)="goToPage(meta.page + 1)"
+        >
+          Próxima
+        </button>
+      </div>
+    </div>
   </div>
-</body>
+</div>
+
+<!-- Modal de QR Code, Ficha Completa e Histórico de Movimentações -->
+<div
+  *ngIf="detailsOpen && detailsItem as item"
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 p-4 backdrop-blur-sm"
+>
+  <div class="flex min-h-full items-start justify-center py-6">
+    <div class="w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+      <!-- Topo do Modal -->
+      <div class="flex items-start justify-between border-b border-slate-100 bg-slate-50 px-6 py-5">
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span
+              class="rounded-lg bg-slate-900 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-white"
+            >
+              {{ item.serialNumber }}
+            </span>
+            <span class="badge" [ngClass]="statusClass(item.status)">{{ item.status }}</span>
+            <span class="badge" [ngClass]="conditionClass(item.condition)">{{
+              item.condition
+            }}</span>
+          </div>
+          <h3 class="mt-2 truncate text-lg font-bold text-slate-900">{{ item.name }}</h3>
+          <p class="text-xs text-slate-500">
+            {{ item.category }}{{ item.location ? ' · ' + item.location : '' }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-200/60 hover:text-slate-700"
+          (click)="closeDetails()"
+          aria-label="Fechar"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Abas -->
+      <div class="flex border-b border-slate-200 px-6">
+        <button
+          type="button"
+          class="border-b-2 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition"
+          [ngClass]="
+            detailsTab === 'qrcode'
+              ? 'border-brand-600 text-brand-700'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          "
+          (click)="detailsTab = 'qrcode'"
+        >
+          QR Code & Etiqueta
+        </button>
+        <button
+          type="button"
+          class="border-b-2 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition"
+          [ngClass]="
+            detailsTab === 'info'
+              ? 'border-brand-600 text-brand-700'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          "
+          (click)="detailsTab = 'info'"
+        >
+          Ficha & Depreciação
+        </button>
+        <button
+          type="button"
+          class="border-b-2 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition"
+          [ngClass]="
+            detailsTab === 'movements'
+              ? 'border-brand-600 text-brand-700'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          "
+          (click)="detailsTab = 'movements'"
+        >
+          Movimentações ({{ item.movements?.length || 0 }})
+        </button>
+      </div>
+
+      <!-- Aba 1: QR Code & Etiqueta -->
+      <div *ngIf="detailsTab === 'qrcode'" class="p-6">
+        <div *ngIf="qrLoading" class="flex flex-col items-center justify-center py-12">
+          <div
+            class="h-10 w-10 animate-spin rounded-full border-4 border-brand-200 border-t-brand-600"
+          ></div>
+          <p class="mt-3 text-xs text-slate-500">Gerando QR Code de identificação...</p>
+        </div>
+
+        <div *ngIf="!qrLoading && qrData" class="grid gap-6 md:grid-cols-2 md:items-center">
+          <!-- Preview da Etiqueta Patrimonial -->
+          <div class="rounded-2xl border-2 border-slate-900 bg-white p-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <img
+                [src]="qrData.qrCodeDataUrl"
+                [alt]="'QR Code ' + item.serialNumber"
+                class="h-32 w-32 flex-shrink-0 rounded-xl border border-slate-200 p-1"
+              />
+              <div class="min-w-0 flex-1">
+                <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-brand-700">
+                  Patrify · Plaqueta QR
+                </p>
+                <p class="mt-0.5 truncate text-xs font-semibold text-slate-500">
+                  {{ companyName }}
+                </p>
+                <p class="mt-1.5 line-clamp-2 text-sm font-bold text-slate-900">{{ item.name }}</p>
+                <span
+                  class="mt-2 inline-block rounded-md bg-slate-900 px-2.5 py-1 font-mono text-xs font-bold tracking-wider text-white"
+                >
+                  {{ item.serialNumber }}
+                </span>
+                <p class="mt-1.5 truncate text-[11px] text-slate-500">
+                  {{ item.category }}{{ item.location ? ' · ' + item.location : '' }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ações do QR Code -->
+          <div class="space-y-3">
+            <p class="text-xs leading-relaxed text-slate-600">
+              Ao escanear este QR Code com a câmera de qualquer celular, todas as informações deste
+              patrimônio são exibidas na ficha pública de verificação:
+            </p>
+            <div
+              class="truncate rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-600"
+            >
+              {{ qrData.verificationUrl }}
+            </div>
+
+            <div class="grid gap-2 sm:grid-cols-2">
+              <button type="button" class="btn btn-primary w-full" (click)="printSingleTag()">
+                Imprimir Etiqueta
+              </button>
+              <button type="button" class="btn btn-secondary w-full" (click)="downloadQrCode()">
+                Baixar PNG
+              </button>
+              <a
+                [routerLink]="['/verificar', item.serialNumber]"
+                target="_blank"
+                class="btn btn-secondary w-full text-center"
+              >
+                Abrir Ficha Pública
+              </a>
+              <button
+                type="button"
+                class="btn btn-ghost w-full"
+                (click)="copyVerificationLink()"
+              >
+                Copiar Link
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba 2: Ficha Completa & Depreciação -->
+      <div *ngIf="detailsTab === 'info'" class="space-y-5 p-6">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="rounded-2xl bg-slate-50 p-3.5">
+            <p class="text-[11px] font-semibold uppercase text-slate-400">Responsável / Setor</p>
+            <p class="mt-1 text-sm font-semibold text-slate-900">
+              {{ item.responsible || 'Não informado' }}
+            </p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-3.5">
+            <p class="text-[11px] font-semibold uppercase text-slate-400">Nota Fiscal</p>
+            <p class="mt-1 text-sm font-semibold text-slate-900">
+              {{ item.invoiceNumber || 'Não informada' }}
+            </p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-3.5">
+            <p class="text-[11px] font-semibold uppercase text-slate-400">Garantia até</p>
+            <p class="mt-1 text-sm font-semibold text-slate-900">
+              {{
+                item.warrantyUntil
+                  ? (item.warrantyUntil | date: 'dd/MM/yyyy' : 'UTC')
+                  : 'Sem garantia registrada'
+              }}
+            </p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-3.5">
+            <p class="text-[11px] font-semibold uppercase text-slate-400">Valor de Aquisição Total</p>
+            <p class="mt-1 text-sm font-bold text-slate-900">
+              {{
+                (item.depreciation?.totalAcquisitionValue ?? item.value * item.quantity)
+                  | currency: 'BRL'
+              }}
+            </p>
+          </div>
+          <div class="rounded-2xl bg-emerald-50/70 p-3.5">
+            <p class="text-[11px] font-semibold uppercase text-emerald-700">
+              Valor Contábil Estimado
+            </p>
+            <p class="mt-1 text-sm font-bold text-emerald-700">
+              {{ (item.depreciation?.totalDepreciatedValue ?? item.value) | currency: 'BRL' }}
+            </p>
+          </div>
+          <div class="rounded-2xl bg-slate-50 p-3.5">
+            <p class="text-[11px] font-semibold uppercase text-slate-400">Depreciação Acumulada</p>
+            <p class="mt-1 text-sm font-semibold text-slate-900">
+              {{ item.depreciation?.depreciationPercent ?? 0 }}% ({{
+                item.depreciation?.annualRatePercent ?? 10
+              }}% a.a.)
+            </p>
+          </div>
+        </div>
+
+        <div *ngIf="item.notes" class="rounded-2xl border border-slate-200 p-4">
+          <p class="text-xs font-semibold uppercase text-slate-400">
+            Observações e Especificações Técnicas
+          </p>
+          <p class="mt-1 text-sm leading-relaxed text-slate-700">{{ item.notes }}</p>
+        </div>
+      </div>
+
+      <!-- Aba 3: Histórico de Movimentações -->
+      <div *ngIf="detailsTab === 'movements'" class="space-y-6 p-6">
+        <form
+          (ngSubmit)="submitMovement()"
+          class="space-y-3 rounded-2xl border border-slate-200 bg-slate-50 p-4"
+        >
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-700">
+            Registrar nova movimentação / manutenção
+          </p>
+          <div class="grid gap-3 sm:grid-cols-3">
+            <div>
+              <label class="label">Tipo</label>
+              <select name="movType" class="input" [(ngModel)]="movementForm.type">
+                <option *ngFor="let type of movementTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="label">Nova localização</label>
+              <input
+                type="text"
+                name="movLocation"
+                class="input"
+                [(ngModel)]="movementForm.location"
+                placeholder="Ex.: Filial Campinas"
+              />
+            </div>
+            <div>
+              <label class="label">Responsável</label>
+              <input
+                type="text"
+                name="movResponsible"
+                class="input"
+                [(ngModel)]="movementForm.responsible"
+                placeholder="Nome / Setor"
+              />
+            </div>
+          </div>
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <input
+              type="text"
+              name="movDescription"
+              class="input flex-1"
+              [(ngModel)]="movementForm.description"
+              placeholder="Descreva a movimentação, manutenção ou auditoria realizada..."
+              required
+            />
+            <button type="submit" class="btn btn-primary whitespace-nowrap" [disabled]="movementSaving">
+              Registrar evento
+            </button>
+          </div>
+        </form>
+
+        <div class="max-h-64 overflow-y-auto pr-2">
+          <ol class="space-y-3 border-l-2 border-brand-200 pl-4">
+            <li *ngFor="let mov of item.movements || []" class="relative">
+              <span
+                class="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-brand-600 ring-4 ring-white"
+              ></span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="rounded bg-brand-50 px-2 py-0.5 text-xs font-semibold text-brand-700">
+                  {{ mov.type }}
+                </span>
+                <span class="text-xs text-slate-400">
+                  {{ mov.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                </span>
+              </div>
+              <p class="mt-1 text-sm font-medium text-slate-800">{{ mov.description }}</p>
+              <p class="text-xs text-slate-500">
+                <span *ngIf="mov.location">Local: {{ mov.location }}</span>
+                <span *ngIf="mov.responsible"> · Resp.: {{ mov.responsible }}</span>
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de cadastro/edição -->
+<div
+  *ngIf="modalOpen"
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/50 p-4 backdrop-blur-sm"
+>
+  <div class="flex min-h-full items-start justify-center py-6">
+    <div class="w-full max-w-3xl rounded-2xl bg-white shadow-2xl">
+      <div class="flex items-start justify-between border-b border-slate-100 px-6 py-5">
+        <div>
+          <h3 class="text-lg font-semibold text-slate-900">
+            {{ editing ? 'Editar patrimônio' : 'Novo patrimônio' }}
+          </h3>
+          <p class="mt-1 text-xs text-slate-500">
+            {{
+              editing
+                ? 'Atualize as informações do bem selecionado.'
+                : 'Preencha os dados para adicionar um novo bem ao inventário.'
+            }}
+          </p>
+        </div>
+        <button
+          type="button"
+          class="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+          (click)="closeModal()"
+          aria-label="Fechar"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <form (ngSubmit)="save()" class="space-y-5 px-6 py-5">
+        <div>
+          <label class="label" for="name">Nome do patrimônio *</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            class="input"
+            [(ngModel)]="form.name"
+            placeholder="Ex.: Notebook Dell Latitude"
+            required
+          />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <label class="label" for="value">Valor unitário (R$) *</label>
+            <input
+              id="value"
+              name="value"
+              type="number"
+              min="0"
+              step="0.01"
+              class="input"
+              [(ngModel)]="form.value"
+              required
+            />
+          </div>
+          <div>
+            <label class="label" for="purchaseDate">Data de aquisição *</label>
+            <input
+              id="purchaseDate"
+              name="purchaseDate"
+              type="date"
+              class="input"
+              [(ngModel)]="form.purchaseDate"
+              required
+            />
+          </div>
+          <div>
+            <label class="label" for="quantity">Quantidade</label>
+            <input
+              id="quantity"
+              name="quantity"
+              type="number"
+              min="1"
+              step="1"
+              class="input"
+              [(ngModel)]="form.quantity"
+            />
+          </div>
+          <div>
+            <label class="label" for="category">Categoria *</label>
+            <select id="category" name="category" class="input" [(ngModel)]="form.category">
+              <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="status">Status</label>
+            <select id="status" name="status" class="input" [(ngModel)]="form.status">
+              <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="condition">Conservação</label>
+            <select id="condition" name="condition" class="input" [(ngModel)]="form.condition">
+              <option *ngFor="let condition of conditions" [value]="condition">
+                {{ condition }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="label" for="location">Localização física</label>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              class="input"
+              [(ngModel)]="form.location"
+              placeholder="Ex.: Matriz - TI"
+            />
+          </div>
+          <div>
+            <label class="label" for="responsible">Responsável / Setor</label>
+            <input
+              id="responsible"
+              name="responsible"
+              type="text"
+              class="input"
+              [(ngModel)]="form.responsible"
+              placeholder="Ex.: Lucas Andrade · Engenharia"
+            />
+          </div>
+          <div>
+            <label class="label" for="invoiceNumber">Número da Nota Fiscal</label>
+            <input
+              id="invoiceNumber"
+              name="invoiceNumber"
+              type="text"
+              class="input"
+              [(ngModel)]="form.invoiceNumber"
+              placeholder="Ex.: NF-2024-00142"
+            />
+          </div>
+          <div>
+            <label class="label" for="warrantyUntil">Garantia até</label>
+            <input
+              id="warrantyUntil"
+              name="warrantyUntil"
+              type="date"
+              class="input"
+              [(ngModel)]="form.warrantyUntil"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="notes">Observações e especificações técnicas</label>
+          <textarea
+            id="notes"
+            name="notes"
+            rows="2"
+            class="input"
+            [(ngModel)]="form.notes"
+            placeholder="Configuração, número de série do fabricante, observações de manutenção..."
+          ></textarea>
+        </div>
+
+        <div>
+          <span class="label">Imagem do patrimônio</span>
+          <div
+            class="flex flex-col gap-4 rounded-2xl border border-dashed border-slate-300 p-4 sm:flex-row sm:items-center"
+          >
+            <div
+              class="flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100"
+            >
+              <img
+                *ngIf="imagePreview"
+                [src]="imagePreview"
+                alt="Prévia da imagem"
+                class="h-full w-full object-cover"
+              />
+              <svg
+                *ngIf="!imagePreview"
+                class="h-8 w-8 text-slate-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5z"
+                />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm font-medium text-slate-700">JPEG, PNG ou WEBP · até 5 MB</p>
+              <p class="mt-1 text-xs text-slate-500">
+                A imagem ajuda a identificar o bem no inventário e na ficha do QR Code.
+              </p>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <label class="btn btn-secondary btn-sm cursor-pointer">
+                  Selecionar imagem
+                  <input
+                    type="file"
+                    class="hidden"
+                    accept="image/jpeg,image/png,image/webp"
+                    (change)="onFileSelected($event)"
+                  />
+                </label>
+                <button
+                  *ngIf="selectedFile"
+                  type="button"
+                  class="btn btn-ghost btn-sm"
+                  (click)="removeSelectedImage()"
+                >
+                  Remover seleção
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col-reverse justify-end gap-3 border-t border-slate-100 pt-5 sm:flex-row"
+        >
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeModal()"
+            [disabled]="saving"
+          >
+            Cancelar
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            <span
+              *ngIf="saving"
+              class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+            ></span>
+            {{ editing ? 'Salvar alterações' : 'Cadastrar patrimônio' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [open]="confirmOpen"
+  [busy]="deletingBusy"
+  title="Excluir patrimônio"
+  [message]="
+    'Tem certeza que deseja excluir “' +
+    (deleting?.name || '') +
+    '”? Esta ação remove o bem do inventário e não pode ser desfeita.'
+  "
+  confirmLabel="Excluir"
+  cancelLabel="Cancelar"
+  [danger]="true"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()"
+></app-confirm-dialog>

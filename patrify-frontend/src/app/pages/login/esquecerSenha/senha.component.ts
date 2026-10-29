@@ -1,6 +1,14 @@
 import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { BackendService } from 'src/app/service/backend.service';
+import { AuthService } from '../../../core/services/auth.service';
+import { isValidCnpj, normalizeCnpj } from '../../../shared/utils/cnpj';
+
+const cnpjValidator = (control: AbstractControl) => {
+  if (!control.value) return null;
+  return isValidCnpj(control.value) ? null : { cnpj: true };
+};
 
 @Component({
   selector: 'senha',
@@ -8,38 +16,61 @@ import { BackendService } from 'src/app/service/backend.service';
   styleUrls: ['./senha.component.scss']
 })
 export class SenhaComponent {
+  form: FormGroup;
+  submitting = false;
+  sent = false;
 
-  cnpj: string = '';
-  email:string   = '';
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly auth: AuthService,
+    private readonly toastr: ToastrService,
+    private readonly router: Router
+  ) {
+    this.form = this.fb.group({
+      cnpj: ['', [Validators.required, cnpjValidator]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(160)]]
+    });
+  }
 
+  get controls() {
+    return this.form.controls;
+  }
 
-   
-  constructor(private backendService: BackendService, private toastr: ToastrService) {}
-  
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
-  recpassword(){
-      const userData = this.prepareuserdata()
+    const { cnpj, email } = this.form.getRawValue();
+    this.submitting = true;
 
-      this.backendService.updatePassword(userData) 
-      .subscribe(
-        response => {
-          this.toastr.success( 'Email de recuperação enviado com Sucesso', 'Sucesso');
+    this.auth
+      .forgotPassword({
+        cnpj: normalizeCnpj(cnpj),
+        email: String(email).trim().toLowerCase()
+      })
+      .subscribe({
+        next: (response) => {
+          this.submitting = false;
+          this.sent = true;
+          this.toastr.success(
+            response.message || 'Se os dados conferirem, enviaremos as instruções por e-mail.',
+            'Solicitação registrada'
+          );
         },
-        error => {
-          // Manipular erros de registro aqui (por exemplo, exibir mensagem de erro)
-          this.toastr.error( 'Algo deu errado no envio do email de recuperação, verifique se o CNPJ e email estão corretos', 'Erro');
-          console.error('Erro ao logar usuário:', error);
+        error: () => {
+          this.submitting = false;
         }
-      );
+      });
   }
 
-  prepareuserdata() {
-    const data = {
-      email: this.email,
-      cnpj: this.cnpj,
-    };
-  
-    return data;
+  backToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
+  retry(): void {
+    this.sent = false;
+    this.form.markAsPristine();
+  }
 }

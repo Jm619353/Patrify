@@ -1,0 +1,468 @@
+<div class="space-y-6">
+  <!-- Hero -->
+  <section
+    class="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-soft sm:px-8"
+  >
+    <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-600/25 blur-3xl"></div>
+    <div class="absolute -bottom-24 right-24 h-64 w-64 rounded-full bg-accent-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-brand-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-brand-300"
+        >
+          Proteção Patrimonial & Gestão de Riscos
+        </span>
+        <h2 class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          Seguros, Garantias Estendidas e Sinistros
+        </h2>
+        <p class="mt-1.5 text-sm leading-relaxed text-slate-400">
+          Gerencie apólices de seguro da frota, maquinário, imóveis e equipamentos de TI, monitore
+          vencimentos de cobertura, franquias e acione registros de sinistro.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <button type="button" (click)="openCreateModal()" class="btn btn-primary">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Nova apólice / garantia
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPIs -->
+  <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="card card-body">
+      <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600">
+        Capital Total Segurado (LMI)
+      </p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">
+        {{ summary.totalInsuredAmount | currency: 'BRL' }}
+      </p>
+      <p class="mt-1 text-xs text-slate-500">
+        {{ summary.active }} apólice(s) vigente(s) de {{ summary.total }}
+      </p>
+    </div>
+
+    <div class="card card-body">
+      <p class="text-xs font-semibold uppercase tracking-wider text-brand-600">
+        Investimento em Prêmios
+      </p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">
+        {{ summary.totalPremiumCost | currency: 'BRL' }}
+      </p>
+      <p class="mt-1 text-xs text-slate-500">Custo anual de apólices e garantias</p>
+    </div>
+
+    <div
+      class="card card-body"
+      [ngClass]="summary.expiringSoon > 0 ? 'border-amber-200 bg-amber-50/40' : ''"
+    >
+      <p class="text-xs font-semibold uppercase tracking-wider text-amber-600">
+        Vencendo em até 30 dias
+      </p>
+      <p class="mt-2 text-2xl font-bold text-slate-900">{{ summary.expiringSoon }}</p>
+      <p class="mt-1 text-xs text-slate-500">Apólices próximas da renovação</p>
+    </div>
+
+    <div
+      class="card card-body"
+      [ngClass]="summary.claimed > 0 ? 'border-red-200 bg-red-50/40' : ''"
+    >
+      <p class="text-xs font-semibold uppercase tracking-wider text-red-600">
+        Sinistros Acionados
+      </p>
+      <p class="mt-2 text-2xl font-bold text-red-700">{{ summary.claimed }}</p>
+      <p class="mt-1 text-xs text-slate-500">Ocorrências em regulação/indenização</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card card-body">
+    <div class="grid gap-3 md:grid-cols-12">
+      <div class="relative md:col-span-5">
+        <svg
+          class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+          />
+        </svg>
+        <input
+          type="search"
+          [(ngModel)]="search"
+          (keyup.enter)="load()"
+          placeholder="Buscar por nº da apólice, seguradora, patrimônio ou série..."
+          class="form-input pl-10"
+        />
+      </div>
+
+      <div class="md:col-span-4">
+        <select [(ngModel)]="coverageFilter" (change)="load()" class="form-select">
+          <option value="">Todas as coberturas</option>
+          <option *ngFor="let cov of coverageTypes" [value]="cov">{{ cov }}</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-2 md:col-span-3">
+        <select [(ngModel)]="statusFilter" (change)="load()" class="form-select">
+          <option value="">Todos os status</option>
+          <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+        </select>
+        <button type="button" (click)="load()" class="btn btn-primary">Filtrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Apólices -->
+  <div *ngIf="loading" class="grid gap-4">
+    <div *ngFor="let i of [1, 2, 3]" class="card card-body">
+      <div class="skeleton h-5 w-64"></div>
+      <div class="skeleton mt-3 h-4 w-96"></div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="!loading && items.length === 0"
+    class="card card-body py-14 text-center"
+  >
+    <p class="text-base font-semibold text-slate-900">
+      Nenhuma apólice ou garantia encontrada
+    </p>
+    <p class="mt-1 text-sm text-slate-500">
+      Cadastre apólices de seguro ou contratos de garantia estendida para proteger seus ativos.
+    </p>
+    <div class="mt-5 flex justify-center gap-3">
+      <button type="button" (click)="clearFilters()" class="btn btn-secondary">
+        Limpar filtros
+      </button>
+      <button type="button" (click)="openCreateModal()" class="btn btn-primary">
+        Nova apólice
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && items.length > 0" class="grid gap-4">
+    <div
+      *ngFor="let item of items"
+      class="card card-body transition hover:border-brand-200"
+      [ngClass]="
+        item.status === 'Sinistro Acionado'
+          ? 'border-red-200 bg-red-50/20'
+          : isExpiringSoon(item)
+          ? 'border-amber-200 bg-amber-50/20'
+          : ''
+      "
+    >
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div class="space-y-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="badge" [ngClass]="statusClass(item.status)">
+              {{ item.status }}
+            </span>
+            <span class="badge badge-info">{{ item.coverageType }}</span>
+            <span
+              class="rounded-md bg-slate-900 px-2.5 py-0.5 font-mono text-xs font-semibold text-white"
+            >
+              {{ item.policyNumber }}
+            </span>
+            <span
+              class="badge"
+              [ngClass]="isExpiringSoon(item) ? 'badge-warning' : 'badge-neutral'"
+            >
+              {{ validityLabel(item) }}
+            </span>
+          </div>
+
+          <div class="flex flex-wrap items-baseline gap-2">
+            <h3 class="text-base font-bold text-slate-900">
+              {{ item.patrimonyName }}
+            </h3>
+            <a
+              [routerLink]="['/verificar', item.serialNumber]"
+              class="font-mono text-xs font-semibold text-brand-600 hover:underline"
+            >
+              ({{ item.serialNumber }})
+            </a>
+          </div>
+
+          <p class="text-sm text-slate-600">
+            <strong class="text-slate-900">Seguradora:</strong> {{ item.insurer }}
+            <ng-container *ngIf="item.brokerContact">
+              · <strong class="text-slate-900">Contato / Assistência:</strong>
+              {{ item.brokerContact }}
+            </ng-container>
+          </p>
+
+          <div class="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-600">
+            <span>
+              <strong>Capital Segurado:</strong>
+              <span class="font-bold text-emerald-700">
+                {{ item.insuredAmount | currency: 'BRL' }}
+              </span>
+            </span>
+            <span>
+              <strong>Prêmio Anual:</strong> {{ item.premiumCost | currency: 'BRL' }}
+            </span>
+            <span>
+              <strong>Franquia:</strong> {{ item.deductible | currency: 'BRL' }}
+            </span>
+            <span>
+              <strong>Vigência:</strong> {{ item.startDate | date: 'dd/MM/yyyy' }} a
+              {{ item.endDate | date: 'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+          <p *ngIf="item.notes" class="text-xs text-slate-500">
+            {{ item.notes }}
+          </p>
+
+          <div
+            *ngIf="item.claimNotes"
+            class="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800"
+          >
+            <strong>Ocorrência de Sinistro:</strong> {{ item.claimNotes }}
+            <span *ngIf="item.claimedAt" class="text-red-600">
+              ({{ item.claimedAt | date: 'dd/MM/yyyy HH:mm' }})
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button
+            *ngIf="item.status === 'Vigente'"
+            type="button"
+            (click)="openClaimModal(item)"
+            class="btn btn-secondary btn-sm border-red-200 text-red-700 hover:bg-red-50"
+          >
+            Acionar Sinistro
+          </button>
+
+          <button
+            type="button"
+            (click)="renewOneYear(item)"
+            class="btn btn-secondary btn-sm"
+            title="Renovar vigência por mais 1 ano"
+          >
+            Renovar +1 ano
+          </button>
+
+          <button
+            type="button"
+            (click)="printCertificate(item)"
+            class="btn btn-primary btn-sm"
+          >
+            Imprimir Certificado
+          </button>
+
+          <button
+            type="button"
+            (click)="askDelete(item)"
+            class="btn btn-ghost btn-sm text-red-600 hover:bg-red-50"
+          >
+            Excluir
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nova Apólice / Garantia -->
+<div
+  *ngIf="modalOpen"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+  (click)="closeModal()"
+>
+  <div
+    class="w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+      <div>
+        <h3 class="text-lg font-bold text-slate-900">
+          Cadastrar Apólice de Seguro ou Garantia Estendida
+        </h3>
+        <p class="text-xs text-slate-500">
+          O vínculo da cobertura também é registrado no histórico do patrimônio.
+        </p>
+      </div>
+      <button
+        type="button"
+        (click)="closeModal()"
+        class="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="space-y-4 p-6">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label class="form-label">Patrimônio Segurado *</label>
+          <select
+            formControlName="patrimonyId"
+            (change)="onPatrimonySelect()"
+            class="form-select"
+          >
+            <option value="" disabled>Selecione o patrimônio...</option>
+            <option *ngFor="let pat of patrimonies" [value]="pat.id">
+              {{ pat.name }} — {{ pat.serialNumber }} ({{ pat.value | currency: 'BRL' }})
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Número da Apólice / Contrato *</label>
+          <input
+            type="text"
+            formControlName="policyNumber"
+            placeholder="Ex.: APO-2026-8891"
+            class="form-input font-mono"
+          />
+        </div>
+
+        <div>
+          <label class="form-label">Seguradora / Garantidora *</label>
+          <input
+            type="text"
+            formControlName="insurer"
+            placeholder="Ex.: Porto Seguro / Tokio Marine / Dell"
+            class="form-input"
+          />
+        </div>
+
+        <div>
+          <label class="form-label">Modalidade de Cobertura *</label>
+          <select formControlName="coverageType" class="form-select">
+            <option *ngFor="let cov of coverageTypes" [value]="cov">{{ cov }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label">Importância Segurada (R$) *</label>
+          <input type="number" step="0.01" formControlName="insuredAmount" class="form-input" />
+        </div>
+
+        <div>
+          <label class="form-label">Prêmio Anual (R$)</label>
+          <input type="number" step="0.01" formControlName="premiumCost" class="form-input" />
+        </div>
+
+        <div>
+          <label class="form-label">Franquia (R$)</label>
+          <input type="number" step="0.01" formControlName="deductible" class="form-input" />
+        </div>
+
+        <div>
+          <label class="form-label">Início da Vigência *</label>
+          <input type="date" formControlName="startDate" class="form-input" />
+        </div>
+
+        <div>
+          <label class="form-label">Fim da Vigência *</label>
+          <input type="date" formControlName="endDate" class="form-input" />
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="form-label">Corretora / Telefone Assistência 24h</label>
+          <input
+            type="text"
+            formControlName="brokerContact"
+            placeholder="Ex.: Corretora Prime · 0800-727-0800"
+            class="form-input"
+          />
+        </div>
+
+        <div class="sm:col-span-2">
+          <label class="form-label">Cláusulas e Observações da Cobertura</label>
+          <textarea
+            rows="2"
+            formControlName="notes"
+            placeholder="Ex.: Cobre roubo, furto qualificado, danos elétricos e assistência 24h."
+            class="form-input"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+        <button type="button" (click)="closeModal()" class="btn btn-secondary">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="saving" class="btn btn-primary">
+          {{ saving ? 'Salvando...' : 'Salvar Apólice' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Acionar Sinistro -->
+<div
+  *ngIf="claimModalOpen && selectedForClaim"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+  (click)="closeClaimModal()"
+>
+  <div
+    class="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="border-b border-slate-100 px-6 py-4">
+      <h3 class="text-lg font-bold text-slate-900">
+        Registrar Acionamento de Sinistro
+      </h3>
+      <p class="mt-0.5 text-xs text-slate-500">
+        Apólice {{ selectedForClaim.policyNumber }} · {{ selectedForClaim.patrimonyName }}
+      </p>
+    </div>
+
+    <div class="space-y-4 p-6">
+      <div>
+        <label class="form-label">Descrição da Ocorrência / Nº do Protocolo da Seguradora</label>
+        <textarea
+          rows="3"
+          [(ngModel)]="claimDescription"
+          placeholder="Ex.: Avaria elétrica registrada em 28/10. Protocolo junto à seguradora nº SIN-994812."
+          class="form-input"
+        ></textarea>
+      </div>
+
+      <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <button type="button" (click)="closeClaimModal()" class="btn btn-secondary">
+          Cancelar
+        </button>
+        <button
+          type="button"
+          [disabled]="saving"
+          (click)="confirmClaim()"
+          class="btn bg-red-600 text-white hover:bg-red-700"
+        >
+          {{ saving ? 'Registrando...' : 'Confirmar Sinistro' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dialog de confirmação de exclusão -->
+<app-confirm-dialog
+  [open]="!!deleteCandidate"
+  title="Excluir apólice de seguro"
+  [message]="
+    deleteCandidate
+      ? 'Deseja realmente excluir a apólice ' + deleteCandidate.policyNumber + '?'
+      : ''
+  "
+  confirmLabel="Sim, excluir"
+  (confirm)="confirmDelete()"
+  (cancel)="deleteCandidate = null"
+></app-confirm-dialog>

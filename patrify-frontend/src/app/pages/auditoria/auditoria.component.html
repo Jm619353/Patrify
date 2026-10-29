@@ -1,0 +1,387 @@
+<div class="space-y-6">
+  <!-- Cabeçalho -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight text-slate-900">
+        Auditoria Física, Termos de Responsabilidade e Balanço Contábil
+      </h2>
+      <p class="mt-1 text-sm text-slate-500">
+        Conferência de inventário por código de série, emissão de cautelas assináveis (CLT) e laudo
+        contábil de depreciação.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <button type="button" class="btn btn-secondary" (click)="printExecutiveReport()">
+        Imprimir Balanço Contábil (PDF)
+      </button>
+    </div>
+  </div>
+
+  <!-- Seletor de Abas -->
+  <div class="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+    <button
+      type="button"
+      class="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition"
+      [ngClass]="
+        activeTab === 'audit'
+          ? 'bg-slate-900 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100'
+      "
+      (click)="activeTab = 'audit'"
+    >
+      1. Conferência Física ({{ verifiedCount }}/{{ items.length }})
+    </button>
+    <button
+      type="button"
+      class="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition"
+      [ngClass]="
+        activeTab === 'term'
+          ? 'bg-slate-900 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100'
+      "
+      (click)="activeTab = 'term'"
+    >
+      2. Termo de Responsabilidade ({{ selectedForTerm.size }})
+    </button>
+    <button
+      type="button"
+      class="flex-1 rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider transition"
+      [ngClass]="
+        activeTab === 'accounting'
+          ? 'bg-slate-900 text-white shadow-sm'
+          : 'text-slate-600 hover:bg-slate-100'
+      "
+      (click)="activeTab = 'accounting'"
+    >
+      3. Balanço & Depreciação Contábil
+    </button>
+  </div>
+
+  <!-- ABA 1: Conferência Física de Inventário -->
+  <div *ngIf="activeTab === 'audit'" class="space-y-5">
+    <div class="card card-body">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-bold text-slate-900">
+              Progresso da Conferência Física de Inventário
+            </p>
+            <span class="text-sm font-bold text-brand-700">
+              {{ verifiedCount }} de {{ items.length }} conferidos ({{ auditProgressPercent }}%)
+            </span>
+          </div>
+          <div class="mt-2.5 h-3 overflow-hidden rounded-full bg-slate-100">
+            <div
+              class="h-full rounded-full bg-gradient-to-r from-brand-600 to-emerald-500 transition-all duration-300"
+              [style.width.%]="auditProgressPercent"
+            ></div>
+          </div>
+          <p class="mt-2 text-xs text-slate-500">
+            Bipe com o leitor ou digite o código de série da etiqueta para atestar a presença física
+            do patrimônio no setor.
+          </p>
+        </div>
+
+        <form class="flex gap-2" (ngSubmit)="onScanSerial()">
+          <input
+            type="text"
+            name="scannerSerial"
+            [(ngModel)]="scannerSerial"
+            placeholder="Bipar série (ex: TECHDEMO0001)"
+            class="input font-mono uppercase sm:w-64"
+          />
+          <button type="submit" class="btn btn-primary whitespace-nowrap">
+            Confirmar Série
+          </button>
+        </form>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-4">
+        <div class="flex gap-2">
+          <button
+            type="button"
+            class="btn btn-sm"
+            [ngClass]="auditFilter === 'all' ? 'btn-primary' : 'btn-ghost'"
+            (click)="auditFilter = 'all'"
+          >
+            Todos ({{ items.length }})
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm"
+            [ngClass]="auditFilter === 'pending' ? 'btn-primary' : 'btn-ghost'"
+            (click)="auditFilter = 'pending'"
+          >
+            Pendentes ({{ items.length - verifiedCount }})
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm"
+            [ngClass]="auditFilter === 'verified' ? 'btn-primary' : 'btn-ghost'"
+            (click)="auditFilter = 'verified'"
+          >
+            Conferidos ({{ verifiedCount }})
+          </button>
+        </div>
+
+        <button type="button" class="btn btn-ghost btn-sm" (click)="resetAuditSession()">
+          Reiniciar checklist local
+        </button>
+      </div>
+    </div>
+
+    <div class="table-shell">
+      <div class="overflow-x-auto">
+        <table class="table-base">
+          <thead>
+            <tr>
+              <th>Status Auditoria</th>
+              <th>Código de Série</th>
+              <th>Patrimônio</th>
+              <th>Localização Esperada</th>
+              <th>Responsável</th>
+              <th>Conservação</th>
+              <th class="text-right">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of filteredAuditItems">
+              <td>
+                <span
+                  *ngIf="verifiedIds.has(item.id)"
+                  class="badge badge-success"
+                >
+                  ✓ Conferido
+                </span>
+                <span
+                  *ngIf="!verifiedIds.has(item.id)"
+                  class="badge badge-warning"
+                >
+                  Pendente
+                </span>
+              </td>
+              <td class="font-mono font-bold text-slate-900">{{ item.serialNumber }}</td>
+              <td class="font-medium text-slate-900">{{ item.name }}</td>
+              <td>{{ item.location || '—' }}</td>
+              <td>{{ item.responsible || '—' }}</td>
+              <td>{{ item.condition }}</td>
+              <td class="text-right">
+                <button
+                  type="button"
+                  class="btn btn-sm"
+                  [ngClass]="verifiedIds.has(item.id) ? 'btn-secondary' : 'btn-primary'"
+                  [disabled]="auditingId === item.id"
+                  (click)="verifyPatrimony(item)"
+                >
+                  {{ verifiedIds.has(item.id) ? 'Reconfirmar' : 'Confirmar Presença' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA 2: Emissão de Termo de Responsabilidade e Guarda -->
+  <div *ngIf="activeTab === 'term'" class="grid gap-6 lg:grid-cols-12">
+    <div class="space-y-4 lg:col-span-5">
+      <div class="card card-body space-y-4">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Dados do Colaborador / Recebedor</h3>
+          <p class="text-xs text-slate-500">
+            Preencha os dados de quem ficará responsável pela guarda dos equipamentos selecionados.
+          </p>
+        </div>
+
+        <div>
+          <label class="label">Nome completo do colaborador / responsável *</label>
+          <input
+            type="text"
+            class="input"
+            [(ngModel)]="termRecipient.name"
+            placeholder="Ex.: Lucas Andrade"
+          />
+        </div>
+
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div>
+            <label class="label">CPF ou Matrícula</label>
+            <input
+              type="text"
+              class="input"
+              [(ngModel)]="termRecipient.document"
+              placeholder="000.000.000-00"
+            />
+          </div>
+          <div>
+            <label class="label">Cargo / Função</label>
+            <input
+              type="text"
+              class="input"
+              [(ngModel)]="termRecipient.role"
+              placeholder="Ex.: Engenheiro de Software"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="label">Departamento / Setor</label>
+          <input
+            type="text"
+            class="input"
+            [(ngModel)]="termRecipient.department"
+            placeholder="Ex.: Tecnologia da Informação"
+          />
+        </div>
+
+        <div>
+          <label class="label">Observações da Cautela</label>
+          <textarea rows="3" class="input" [(ngModel)]="termRecipient.notes"></textarea>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 p-4">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span>Bens selecionados:</span>
+            <strong class="text-slate-900">{{ selectedForTerm.size }} item(ns)</strong>
+          </div>
+          <div class="mt-1 flex items-center justify-between text-sm">
+            <span class="font-semibold text-slate-700">Valor total sob guarda:</span>
+            <strong class="text-brand-700">{{
+              selectedTermTotalValue | currency: 'BRL'
+            }}</strong>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary w-full" (click)="printResponsibilityTerm()">
+          Emitir e Imprimir Termo de Responsabilidade
+        </button>
+      </div>
+    </div>
+
+    <div class="lg:col-span-7">
+      <div class="table-shell">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">
+              Selecione os Patrimônios para incluir no Termo
+            </h3>
+            <p class="text-xs text-slate-500">
+              Marque um ou mais bens que serão entregues ao colaborador
+            </p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" (click)="selectAllForTerm()">
+            {{ selectedForTerm.size === items.length ? 'Desmarcar todos' : 'Selecionar todos' }}
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="table-base">
+            <thead>
+              <tr>
+                <th>Incluir</th>
+                <th>Série</th>
+                <th>Patrimônio</th>
+                <th>Responsável Atual</th>
+                <th class="text-right">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let item of items"
+                class="cursor-pointer"
+                (click)="toggleTermSelection(item)"
+              >
+                <td>
+                  <input
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-slate-300 text-brand-600"
+                    [checked]="selectedForTerm.has(item.id)"
+                    (click)="$event.stopPropagation()"
+                    (change)="toggleTermSelection(item)"
+                  />
+                </td>
+                <td class="font-mono text-xs font-bold">{{ item.serialNumber }}</td>
+                <td class="font-medium text-slate-900">{{ item.name }}</td>
+                <td class="text-xs text-slate-500">{{ item.responsible || '—' }}</td>
+                <td class="text-right font-semibold">
+                  {{ item.value * item.quantity | currency: 'BRL' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABA 3: Balanço & Depreciação Contábil -->
+  <div *ngIf="activeTab === 'accounting'" class="space-y-5">
+    <div class="grid gap-4 sm:grid-cols-3">
+      <div class="card card-body">
+        <p class="text-xs font-semibold uppercase text-slate-500">Valor Bruto de Aquisição</p>
+        <p class="mt-2 text-2xl font-bold text-slate-900">
+          {{ totalAcquisitionValue | currency: 'BRL' }}
+        </p>
+        <p class="mt-1 text-xs text-slate-500">Custo histórico total dos bens</p>
+      </div>
+
+      <div class="card card-body">
+        <p class="text-xs font-semibold uppercase text-slate-500">Depreciação Acumulada</p>
+        <p class="mt-2 text-2xl font-bold text-amber-600">
+          - {{ totalDepreciationLoss | currency: 'BRL' }}
+        </p>
+        <p class="mt-1 text-xs text-slate-500">Desgaste contábil linear por categoria</p>
+      </div>
+
+      <div class="card card-body">
+        <p class="text-xs font-semibold uppercase text-slate-500">Valor Contábil Líquido</p>
+        <p class="mt-2 text-2xl font-bold text-emerald-600">
+          {{ totalDepreciatedValue | currency: 'BRL' }}
+        </p>
+        <p class="mt-1 text-xs text-slate-500">Valor patrimonial atualizado</p>
+      </div>
+    </div>
+
+    <div class="table-shell">
+      <div class="overflow-x-auto">
+        <table class="table-base">
+          <thead>
+            <tr>
+              <th>Série</th>
+              <th>Patrimônio</th>
+              <th>Categoria</th>
+              <th>Aquisição</th>
+              <th class="text-right">Taxa Anual</th>
+              <th class="text-right">Valor Bruto</th>
+              <th class="text-right">Depreciação</th>
+              <th class="text-right">Valor Contábil Líquido</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of items">
+              <td class="font-mono text-xs font-bold">{{ item.serialNumber }}</td>
+              <td class="font-medium text-slate-900">{{ item.name }}</td>
+              <td>{{ item.category }}</td>
+              <td>{{ item.purchaseDate | date: 'dd/MM/yyyy' : 'UTC' }}</td>
+              <td class="text-right">{{ item.depreciation?.annualRatePercent ?? 10 }}% a.a.</td>
+              <td class="text-right">
+                {{ item.value * item.quantity | currency: 'BRL' }}
+              </td>
+              <td class="text-right text-amber-700">
+                -{{ item.depreciation?.depreciationPercent ?? 0 }}%
+              </td>
+              <td class="text-right font-bold text-emerald-700">
+                {{
+                  (item.depreciation?.totalDepreciatedValue ?? item.value * item.quantity)
+                    | currency: 'BRL'
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

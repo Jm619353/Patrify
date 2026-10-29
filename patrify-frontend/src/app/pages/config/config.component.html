@@ -1,10 +1,188 @@
-<body class="flex bg-gray-100 h-max">
-    <sidebar class="sidebar"></sidebar>  <!-- SIDEBAR -->
-    <div class="flex flex-col flex-1">
-        <header-global></header-global>
-        <div class="flex flex-col items-center justify-center m-auto">
-            <h1 class="font-bold text-5xl">Bem-vindo ao Patrify</h1>
-            <p class>Seu gerenciador de patrimônios físicos</p>
-        </div>
+<div class="space-y-6">
+  <!-- Hero -->
+  <section class="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-soft sm:px-8">
+    <div class="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-brand-600/30 blur-3xl"></div>
+    <div class="absolute -bottom-24 right-24 h-64 w-64 rounded-full bg-accent-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-300">Preferências</p>
+        <h2 class="mt-2 text-2xl font-bold tracking-tight">Ajuste o Patrify ao seu jeito</h2>
+        <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+          Personalize a exibição do inventário, consulte informações da sessão e acesse os
+          detalhes técnicos da aplicação.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <span class="badge bg-white/10 text-slate-200 ring-1 ring-inset ring-white/10">
+          v{{ environment.appVersion }}
+        </span>
+        <span
+          class="badge ring-1 ring-inset"
+          [ngClass]="
+            environment.production
+              ? 'bg-emerald-500/10 text-emerald-300 ring-emerald-400/20'
+              : 'bg-amber-500/10 text-amber-300 ring-amber-400/20'
+          "
+        >
+          {{ environmentLabel }}
+        </span>
+      </div>
     </div>
-</body>
+  </section>
+
+  <div class="grid gap-4 xl:grid-cols-3">
+    <!-- Preferences -->
+    <div class="card card-body xl:col-span-2">
+      <div class="flex items-start gap-3">
+        <span class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+          </svg>
+        </span>
+        <div>
+          <h3 class="text-base font-semibold text-slate-900">Exibição do inventário</h3>
+          <p class="text-xs text-slate-500">
+            Defina quantos patrimônios aparecem por página. A preferência é salva neste navegador.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label class="label" for="pageSize">Itens por página</label>
+          <select
+            id="pageSize"
+            class="input"
+            [ngModel]="pageSize"
+            (ngModelChange)="changePageSize($event)"
+          >
+            <option *ngFor="let size of pageSizeOptions" [ngValue]="size">{{ size }} itens</option>
+          </select>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Prévia</p>
+          <p class="mt-1 text-sm text-slate-700">
+            {{ pageSize }} registros por página, com navegação e exportação completa em CSV.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-5 flex items-start gap-2 rounded-2xl bg-brand-50/60 p-4 text-xs text-brand-900">
+        <svg class="mt-0.5 h-4 w-4 flex-shrink-0 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+        </svg>
+        Filtros, ordenação e busca continuam funcionando normalmente em qualquer tamanho de página.
+      </div>
+    </div>
+
+    <!-- Session -->
+    <div class="card card-body">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-semibold text-slate-900">Sessão atual</h3>
+        <span class="badge badge-success">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          Autenticado
+        </span>
+      </div>
+
+      <div *ngIf="auth.user$ | async as user" class="mt-4 space-y-3 text-sm">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Usuário</p>
+          <p class="mt-0.5 truncate font-medium text-slate-800">{{ user.name }}</p>
+          <p class="truncate text-xs text-slate-500">{{ user.email }}</p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Expira em</p>
+          <p class="mt-0.5 font-medium text-slate-800">
+            {{ expiresAt ? (expiresAt | date: "dd/MM/yyyy 'às' HH:mm") : 'Sessão sem expiração definida' }}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Último acesso</p>
+          <p class="mt-0.5 font-medium text-slate-800">
+            {{ user.lastLoginAt ? (user.lastLoginAt | date: "dd/MM/yyyy 'às' HH:mm") : '—' }}
+          </p>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-danger mt-5 w-full" (click)="requestLogout()">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+        </svg>
+        Encerrar sessão
+      </button>
+    </div>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <!-- About -->
+    <div class="card card-body">
+      <h3 class="text-base font-semibold text-slate-900">Sobre o aplicativo</h3>
+      <p class="text-xs text-slate-500">Detalhes técnicos do ambiente em execução.</p>
+
+      <dl class="mt-4 space-y-3 text-sm">
+        <div class="flex items-center justify-between gap-3">
+          <dt class="text-slate-500">Aplicação</dt>
+          <dd class="font-medium text-slate-800">{{ environment.appName }}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <dt class="text-slate-500">Versão</dt>
+          <dd class="font-medium text-slate-800">{{ environment.appVersion }}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <dt class="text-slate-500">Ambiente</dt>
+          <dd class="font-medium text-slate-800">{{ environmentLabel }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- API -->
+    <div class="card card-body">
+      <h3 class="text-base font-semibold text-slate-900">API conectada</h3>
+      <p class="text-xs text-slate-500">Endereço base utilizado pelo frontend.</p>
+
+      <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3">
+        <p class="break-all font-mono text-xs text-slate-600">{{ environment.apiUrl }}</p>
+      </div>
+
+      <button type="button" class="btn btn-secondary mt-4 w-full" (click)="copy(environment.apiUrl, 'Endereço da API')">
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" />
+        </svg>
+        Copiar endereço
+      </button>
+    </div>
+
+    <!-- Support -->
+    <div class="card card-body">
+      <h3 class="text-base font-semibold text-slate-900">Suporte e ajuda</h3>
+      <p class="text-xs text-slate-500">Precisa de ajuda com a sua conta ou o inventário?</p>
+
+      <div class="mt-4 space-y-2">
+        <a href="mailto:suporte@patrify.app" class="btn btn-secondary w-full">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          </svg>
+          Falar com o suporte
+        </a>
+        <a routerLink="/usuario" class="btn btn-ghost w-full">
+          Atualizar dados do perfil
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  [open]="confirmLogout"
+  title="Encerrar sessão"
+  message="Você precisará informar CNPJ e senha novamente para acessar o Patrify."
+  confirmLabel="Sair da conta"
+  cancelLabel="Continuar conectado"
+  [danger]="true"
+  (confirmed)="logout()"
+  (cancelled)="cancelLogout()"
+></app-confirm-dialog>

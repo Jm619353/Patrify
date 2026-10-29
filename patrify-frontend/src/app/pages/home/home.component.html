@@ -1,15 +1,278 @@
-<body class="flex bg-gray-100 h-screen justify-center items-start">
-    <sidebar class="sidebar"></sidebar> <!-- SIDEBAR -->
-    <div class="flex flex-col flex-1">
-        <header class="bg-white shadow-md py-4 px-6 mb-4 flex justify-between items-center">
-            <h1 class="text-2xl font-semibold" id="titulo-header">{{ currentRoute }}</h1>
-            <div class="text-center"> <!-- Centraliza o conteúdo do texto -->
-                <h1 class="text-2xl font-semibold" >   Bem-vindo ao Patrify    </h1>
-                <p class="text-2xl font-semibold" >    Seu gerenciador de patrimônios físicos    </p>
-            </div>
-        </header>
-        <app-chart></app-chart>
+<div class="space-y-6">
+  <!-- Hero -->
+  <section
+    class="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 text-white shadow-soft sm:px-8 sm:py-9"
+  >
+    <div class="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-brand-600/30 blur-3xl"></div>
+    <div class="absolute -bottom-32 right-24 h-64 w-64 rounded-full bg-accent-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-2xl">
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-brand-300">
+          Painel executivo
+        </p>
+        <h2 class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+          Tudo o que acontece com o seu patrimônio, em um só lugar.
+        </h2>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          Acompanhe valores, status e evolução dos ativos. Tome decisões com dados atualizados e
+          mantenha o inventário sempre confiável.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+        <a routerLink="/inventario" [queryParams]="{ create: 1 }" class="btn btn-primary">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Novo patrimônio
+        </a>
+        <a
+          routerLink="/emprestimos"
+          class="btn border border-white/15 bg-white/5 text-white hover:bg-white/10"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+          </svg>
+          Empréstimos
+        </a>
+        <a
+          routerLink="/manutencoes"
+          class="btn border border-white/15 bg-white/5 text-white hover:bg-white/10"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63" />
+          </svg>
+          Manutenções & OS
+        </a>
+        <a
+          routerLink="/auditoria"
+          class="btn border border-white/15 bg-white/5 text-white hover:bg-white/10"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          Auditoria & Termos CLT
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div *ngFor="let item of [1, 2, 3, 4]" class="card card-body">
+      <div class="skeleton h-3 w-24"></div>
+      <div class="skeleton mt-4 h-8 w-32"></div>
+      <div class="skeleton mt-3 h-3 w-40"></div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading && summary">
+    <!-- KPIs -->
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="card card-body">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Total de bens</p>
+            <p class="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+              {{ summary.totals.items | number: '1.0-0' }}
+            </p>
+            <p class="mt-2 text-xs text-slate-500">
+              {{ summary.totals.active }} ativos · {{ summary.totals.inactive }} não ativos
+            </p>
+          </div>
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+          </span>
+        </div>
+        <div class="mt-4 h-1.5 overflow-hidden rounded-full bg-slate-100">
+          <div class="h-full rounded-full bg-brand-600" [style.width.%]="activeRate"></div>
+        </div>
+        <p class="mt-2 text-xs font-medium text-slate-500">{{ activeRate }}% do inventário ativo</p>
+      </div>
+
+      <div class="card card-body">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Valor ativo</p>
+            <p class="mt-2 text-2xl font-bold tracking-tight text-emerald-600">
+              {{ summary.totals.activeValue | currency: 'BRL' }}
+            </p>
+            <p class="mt-2 text-xs text-slate-500">
+              Contábil estimado:
+              <strong class="text-slate-700">{{
+                (summary.totals.depreciatedValue ?? summary.totals.activeValue) | currency: 'BRL'
+              }}</strong>
+            </p>
+          </div>
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="card card-body">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Valor não ativo</p>
+            <p class="mt-2 text-2xl font-bold tracking-tight text-amber-600">
+              {{ summary.totals.inactiveValue | currency: 'BRL' }}
+            </p>
+            <p class="mt-2 text-xs text-slate-500">Bens ociosos ou em manutenção</p>
+          </div>
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-50 text-amber-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="card card-body">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Descartados</p>
+            <p class="mt-2 text-2xl font-bold tracking-tight text-rose-600">
+              {{ summary.totals.discardedValue | currency: 'BRL' }}
+            </p>
+            <p class="mt-2 text-xs text-slate-500">
+              {{ summary.totals.discarded }} bens fora de operação
+            </p>
+          </div>
+          <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-50 text-rose-600">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg>
+          </span>
+        </div>
+      </div>
     </div>
 
+    <!-- Charts -->
+    <div class="grid gap-4 xl:grid-cols-3">
+      <div class="card card-body min-w-0 xl:col-span-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">Evolução do valor ativo</h3>
+            <p class="text-xs text-slate-500">Valor acumulado por mês de aquisição</p>
+          </div>
+          <span class="badge badge-neutral">Últimos lançamentos</span>
+        </div>
+        <div class="relative mt-5 h-72 w-full overflow-hidden">
+          <canvas #valueCanvas></canvas>
+        </div>
+      </div>
 
-</body>
+      <div class="card card-body min-w-0">
+        <div>
+          <h3 class="text-base font-semibold text-slate-900">Distribuição por status</h3>
+          <p class="text-xs text-slate-500">Situação atual dos bens</p>
+        </div>
+        <div class="relative mt-4 h-56 w-full overflow-hidden">
+          <canvas #statusCanvas></canvas>
+        </div>
+        <div class="mt-4 space-y-2">
+          <div *ngFor="let item of statusData" class="flex items-center justify-between text-sm">
+            <span class="flex items-center gap-2 text-slate-600">
+              <span class="h-2.5 w-2.5 rounded-full" [style.background]="item.color"></span>
+              {{ item.label }}
+            </span>
+            <span class="font-semibold text-slate-900">{{ item.value }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid gap-4 xl:grid-cols-3">
+      <div class="card card-body min-w-0">
+        <div>
+          <h3 class="text-base font-semibold text-slate-900">Categorias</h3>
+          <p class="text-xs text-slate-500">Concentração do inventário</p>
+        </div>
+        <div class="relative mt-4 h-64 w-full overflow-hidden">
+          <canvas #categoryCanvas></canvas>
+        </div>
+      </div>
+
+      <div class="card min-w-0 xl:col-span-2">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4 sm:px-6">
+          <div>
+            <h3 class="text-base font-semibold text-slate-900">Últimos patrimônios</h3>
+            <p class="text-xs text-slate-500">Cadastros mais recentes do inventário</p>
+          </div>
+          <a routerLink="/inventario" class="text-xs font-semibold text-brand-700 hover:text-brand-800">
+            Ver todos
+          </a>
+        </div>
+
+        <div *ngIf="summary.recent.length === 0" class="empty-state">
+          <p class="text-sm text-slate-500">Nenhum patrimônio cadastrado ainda.</p>
+        </div>
+
+        <div *ngIf="summary.recent.length > 0" class="divide-y divide-slate-100">
+          <div
+            *ngFor="let item of summary.recent"
+            class="flex items-center justify-between gap-4 px-5 py-3.5 sm:px-6"
+          >
+            <div class="flex min-w-0 items-center gap-3">
+              <div
+                class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500"
+              >
+                {{ item.category.charAt(0) }}
+              </div>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-medium text-slate-900">{{ item.name }}</p>
+                <p class="truncate text-xs text-slate-500">
+                  {{ item.category }} · {{ item.serialNumber }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 text-right">
+              <div>
+                <p class="text-sm font-semibold text-slate-900">{{ item.value | currency: 'BRL' }}</p>
+                <span
+                  class="badge"
+                  [ngClass]="item.status === 'Ativo' ? 'badge-success' : 'badge-warning'"
+                >
+                  {{ item.status }}
+                </span>
+              </div>
+              <a
+                [routerLink]="['/verificar', item.serialNumber]"
+                class="rounded-xl bg-brand-50 p-2 text-brand-700 transition hover:bg-brand-100"
+                title="Ver QR Code e Ficha Completa"
+              >
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="summary.totals.items === 0" class="card empty-state">
+      <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+        </svg>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-slate-900">Seu inventário começa aqui</h3>
+      <p class="mt-1 max-w-md text-sm text-slate-500">
+        Cadastre o primeiro patrimônio para acompanhar valores, status e indicadores do seu negócio.
+      </p>
+      <a routerLink="/inventario" [queryParams]="{ create: 1 }" class="btn btn-primary mt-5">
+        Cadastrar patrimônio
+      </a>
+    </div>
+  </ng-container>
+</div>
